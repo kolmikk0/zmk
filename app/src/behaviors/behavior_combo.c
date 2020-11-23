@@ -204,6 +204,41 @@ int store_active_combo(combo *combo) {
     return -ENOMEM;
 }
 
+/* returns true if a key was released. */
+static bool release_combo_key(s32_t position, s64_t timestamp) {
+    for (int c = 0; c < active_combo_count; c++) {
+        combo *combo = active_combos[c];
+        bool key_released = false;
+        bool all_keys_pressed = true;
+        bool all_keys_released = true;
+        for (int i = 0; i < combo->key_position_len; i++) {
+            if (combo->key_positions_pressed[i] == NULL) {
+                all_keys_pressed = false;
+            } else if (combo->key_positions_pressed[i]->position != position) {
+                all_keys_released = false;
+            } else { // key pressed and position matches
+                k_free(combo->key_positions_pressed[i]);
+                combo->key_positions_pressed[i] = NULL;
+                key_released = true;
+            }
+        }
+
+        if (key_released) {
+            if ((combo->slow_release && all_keys_released) ||
+                (!combo->slow_release && all_keys_pressed)) {
+                release_combo_behavior(combo, timestamp);
+            }
+            if (all_keys_released) {
+                active_combo_count--;
+                active_combos[c] = active_combos[active_combo_count];
+                active_combos[active_combo_count] = NULL;
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
 static int position_state_down(struct position_state_changed *ev) {
     int num_candidates;
     bool pre_existing_candidates = candidates[0] != NULL;
@@ -234,45 +269,6 @@ static int position_state_down(struct position_state_changed *ev) {
     default:
         return capture_pressed_key(ev);
     }
-}
-
-/* returns true if a key was released. */
-static bool release_combo_key(s32_t position, s64_t timestamp) {
-    for (int c = 0; c < ZMK_BHV_COMBO_MAX_PRESSED_COMBOS; c++) {
-        combo *combo = active_combos[c];
-        if (combo == NULL) {
-            break;
-        }
-
-        bool key_released = false;
-        bool all_keys_pressed = true;
-        bool all_keys_released = true;
-        for (int i = 0; i < combo->key_position_len; i++) {
-            if (combo->key_positions_pressed[i] == NULL) {
-                all_keys_pressed = false;
-            } else if (combo->key_positions_pressed[i]->position != position) {
-                all_keys_released = false;
-            } else { // key pressed and position matches
-                k_free(combo->key_positions_pressed[i]);
-                combo->key_positions_pressed[i] = NULL;
-                key_released = true;
-            }
-        }
-
-        if (key_released) {
-            if ((combo->slow_release && all_keys_released) ||
-                (!combo->slow_release && all_keys_pressed)) {
-                release_combo_behavior(combo, timestamp);
-            }
-            if (all_keys_released) {
-                active_combo_count--;
-                active_combos[c] = active_combos[active_combo_count];
-                active_combos[active_combo_count] = NULL;
-            }
-            return true;
-        }
-    }
-    return false;
 }
 
 static int position_state_up(struct position_state_changed *ev) {
