@@ -39,6 +39,8 @@ typedef struct behavior_combo_config {
     s32_t key_position_len;
     struct zmk_behavior_binding behavior;
     s32_t timeout_ms;
+    // if slow release is set, the combo releases when the last key is released.
+    // otherwise, the combo releases when the first key is released.
     bool slow_release;
     // the virtual key position is a key position outside the range used by the keyboard.
     // it is necessary so hold-taps can uniquely identify a behavior.
