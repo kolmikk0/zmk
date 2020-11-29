@@ -77,17 +77,27 @@ struct k_delayed_work timeout_task;
 struct behavior_combo_data {};
 static struct behavior_combo_data behavior_combo_data;
 
-/* store the combo key pointer in the combos array, one pointer for each key position */
-static int initialize_combo(combo *combo) {
-    for (int i = 0; i < combo->key_position_len; i++) {
-        s32_t position = combo->key_positions[i];
-        // LOG_DBG("combos setting position %d", position);
+// Store the combo key pointer in the combos array, one pointer for each key position
+// The combos are sorted shortest-first, then by virtual-key-position.
+static int initialize_combo(combo *new_combo) {
+    for (int i = 0; i < new_combo->key_position_len; i++) {
+        s32_t position = new_combo->key_positions[i];
+        combo *insert_combo = new_combo;
+        bool set = false;
         for (int j = 0; j < ZMK_BHV_COMBO_MAX_COMBOS_PER_KEY; j++) {
-            if (combo_lookup[position][j] == NULL) {
-                combo_lookup[position][j] = combo;
-                // LOG_DBG("combo_lookup %d %d set", position, j);
+            combo *combo_at_j = combo_lookup[position][j];
+            if (combo_at_j == NULL) {
+                combo_lookup[position][j] = insert_combo;
+                set = true;
                 break;
+            } else if ( // combo_at_j->key_position_len < insert_combo->key_position_len ||
+                combo_at_j->virtual_key_position > insert_combo->virtual_key_position) {
+                // put insert_combo in this spot, move all other combos up.
+                combo_lookup[position][j] = insert_combo;
+                insert_combo = combo_at_j;
             }
+        }
+        if (!set) {
             LOG_ERR("Too many combos for key position %d, ZMK_BHV_COMBO_MAX_COMBOS_PER_KEY %d.",
                     position, ZMK_BHV_COMBO_MAX_COMBOS_PER_KEY);
             return -ENOMEM;
@@ -111,20 +121,27 @@ static int setup_candidates_for_first_keypress(s32_t position, s64_t timestamp) 
 
 static int filter_candidates(s32_t position) {
     // this code iterates over candidates and the lookup together to filter in O(n)
+    // assuming they are both sorted on key_position_len, virtal_key_position
     int matches = 0, lookup_idx = 0, candidate_idx = 0;
     while (lookup_idx < ZMK_BHV_COMBO_MAX_COMBOS_PER_KEY &&
-           candidate_idx < ZMK_BHV_COMBO_MAX_COMBOS_PER_KEY &&
-           combo_lookup[position][lookup_idx] != NULL && candidates[candidate_idx].combo != NULL) {
-        s32_t candidate_pos = candidates[candidate_idx].combo->virtual_key_position;
-        s32_t lookup_pos = combo_lookup[position][lookup_idx]->virtual_key_position;
-        if (candidate_pos == lookup_pos) {
+           candidate_idx < ZMK_BHV_COMBO_MAX_COMBOS_PER_KEY) {
+        combo *candidate = candidates[candidate_idx].combo;
+        combo *lookup = combo_lookup[position][lookup_idx];
+        if (candidate == NULL || lookup == NULL) {
+            break;
+        }
+        if (candidate->virtual_key_position == lookup->virtual_key_position) {
             candidates[matches] = candidates[candidate_idx];
             matches++;
             candidate_idx++;
             lookup_idx++;
-        } else if (candidate_pos > lookup_pos) {
+        } else if (candidate->key_position_len > lookup->key_position_len) {
             lookup_idx++;
-        } else { // candidate_pos < lookup_pos
+        } else if (candidate->key_position_len < lookup->key_position_len) {
+            candidate_idx++;
+        } else if (candidate->virtual_key_position > lookup->virtual_key_position) {
+            lookup_idx++;
+        } else if (candidate->virtual_key_position < lookup->virtual_key_position) {
             candidate_idx++;
         }
     }
