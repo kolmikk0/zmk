@@ -1,0 +1,17 @@
+# Copyright (c) 2020, Cody McGinnis; Okke Formsma
+# SPDX-License-Identifier: MIT
+
+description: Serial steno behavior
+
+compatible: "zmk,behavior-serial-steno"
+
+properties:
+  key:
+    type: string
+    required: true
+  value:
+    type: string
+    required: true
+  label:
+    type: string
+    required: true

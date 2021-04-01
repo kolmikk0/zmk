@@ -156,7 +156,7 @@ struct zmk_hid_keyboard_report {
 } __packed;
 
 struct zmk_hid_consumer_report_body {
-    u8_t keys[ZMK_HID_CONSUMER_NKRO_SIZE];
+    uint8_t keys[ZMK_HID_CONSUMER_NKRO_SIZE];
 } __packed;
 
 struct zmk_hid_consumer_report {
