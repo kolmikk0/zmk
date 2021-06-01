@@ -29,13 +29,11 @@ struct kscan_matrix_config {
 struct kscan_matrix_data {
     kscan_callback_t callback;
     struct k_timer poll_timer;
-    union {
-        struct k_work work;
-        struct k_delayed_work delayed_work;
-    };
+    struct k_delayed_work work;
     /* n x n; matrix_state[n][n] is undefined */
     bool *matrix_state;
     const struct device **pins;
+    const struct device *dev;                                                                  \
 };
 
 #define _KSCAN_GPIO_ITEM_CFG_INIT(n, prop, idx)                                                    \
@@ -56,18 +54,9 @@ static int kscan_matrix_read(const struct device *dev) {
     for (int r = 0; r < pin_count; r++) {
         const struct kscan_gpio_item_config *row_pin_config = &config->pins[r];
         err = gpio_pin_configure(data->pins[r], row_pin_config->pin,
-                GPIO_OUTPUT | GPIO_ACTIVE_HIGH | GPIO_PULL_UP);
+                GPIO_OUTPUT_HIGH | GPIO_ACTIVE_HIGH);
         if (err) {
-            LOG_ERR("Unable to configure pin %d on %s for output",
-                    row_pin_config->pin, row_pin_config->label);
-            return err;
-        } else {
-            LOG_DBG("Configured pin %d on %s for output",
-                    row_pin_config->pin, row_pin_config->label);
-        }
-        err = gpio_pin_set(data->pins[r], config->pins[r].pin, 1);
-        if (err) {
-            LOG_ERR("Failed to set output pin %d on %s active (err %d)",
+            LOG_ERR("Unable to configure pin %d on %s for output (err %d)",
                     row_pin_config->pin, row_pin_config->label, err);
             return err;
         }
@@ -76,14 +65,12 @@ static int kscan_matrix_read(const struct device *dev) {
                 continue;
             }
             const struct kscan_gpio_item_config *other_pin_config = &config->pins[o];
-            err = gpio_pin_configure(data->pins[o], config->pins[o].pin, GPIO_INPUT | GPIO_ACTIVE_HIGH);
+            err = gpio_pin_configure(data->pins[o], config->pins[o].pin,
+                    GPIO_INPUT | GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN);
             if (err) {
-                LOG_ERR("Unable to configure pin %d on %s for input",
-                        other_pin_config->pin, other_pin_config->label);
+                LOG_ERR("Unable to configure pin %d on %s for input (err %d)",
+                        other_pin_config->pin, other_pin_config->label, err);
                 return err;
-            } else {
-                LOG_DBG("Configured pin %d on %s for input",
-                        other_pin_config->pin, other_pin_config->label);
             }
         }
         for (int c = 0; c < pin_count; c++) {
@@ -117,12 +104,12 @@ static int kscan_matrix_read(const struct device *dev) {
 
 static void kscan_matrix_timer_handler(struct k_timer *timer) {
     struct kscan_matrix_data *data = CONTAINER_OF(timer, struct kscan_matrix_data, poll_timer);
-    k_work_submit(&data->work);
+    k_work_submit(&data->work.work);
 }
 
 static void kscan_matrix_work_handler(struct k_work *work) {
     struct kscan_matrix_data *data = CONTAINER_OF(work, struct kscan_matrix_data, work);
-    const struct device* dev = CONTAINER_OF(data, struct device, data);
+    const struct device *dev = data->dev;
     kscan_matrix_read(dev);
 }
 
@@ -146,7 +133,8 @@ static int kscan_matrix_init(const struct device *dev) {
             LOG_DBG("Configured pin %d on %s for input", pin_config->pin, pin_config->label);
         }
     }
-    k_work_init(&data->work, kscan_matrix_work_handler);
+    data->dev = dev;
+    k_delayed_work_init(&data->work, kscan_matrix_work_handler);
     k_timer_init(&data->poll_timer, kscan_matrix_timer_handler, NULL);
     return 0;
 }
