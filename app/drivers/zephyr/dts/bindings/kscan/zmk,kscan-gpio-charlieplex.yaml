@@ -1,0 +1,16 @@
+# Copyright (c) 2020, Pete Johanson
+# SPDX-License-Identifier: MIT
+
+description: GPIO keyboard Charlieplex matrix controller
+
+compatible: "zmk,kscan-gpio-charlieplex"
+
+include: kscan.yaml
+
+properties:
+  gpios:
+    type: phandle-array
+    required: true
+  debounce-period:
+    type: int
+    default: 5
