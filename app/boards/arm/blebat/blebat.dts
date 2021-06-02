@@ -36,8 +36,8 @@
             , <&gpio0 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
 
-            , <&gpio1 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio1 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0  8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 26 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
@@ -142,44 +142,86 @@
     };
 };
 
-&i2c0 {
-    status = "okay";
-    compatible = "nordic,nrf-twi";
-    sda-pin = <32>;
-    scl-pin = <22>;
+/* &i2c0 { */
+/*     /1* status = "okay"; *1/ */
+/*     compatible = "nordic,nrf-twi"; */
+/*     sda-pin = <32>; */
+/*     scl-pin = <22>; */
 
-    oled: ssd1306@3c {
-        compatible = "solomon,ssd1306fb";
-        reg = <0x3c>;
-        label = "DISPLAY";
-        width = <128>;
-        height = <64>;
-        segment-offset = <0>;
-        page-offset = <0>;
-        display-offset = <0>;
-        multiplex-ratio = <63>;
-        prechargep = <0x22>;
-		segment-remap;
-		com-invdir;
-    };
-};
+/*     oled: ssd1306@3c { */
+/*         compatible = "solomon,ssd1306fb"; */
+/*         reg = <0x3c>; */
+/*         label = "DISPLAY"; */
+/*         width = <128>; */
+/*         height = <64>; */
+/*         segment-offset = <0>; */
+/*         page-offset = <0>; */
+/*         display-offset = <0>; */
+/*         multiplex-ratio = <63>; */
+/*         prechargep = <0x22>; */
+/*         segment-remap; */
+/*         com-invdir; */
+/*     }; */
+/* }; */
 
-&qspi {
+&spi0 {
+    compatible = "nordic,nrf-spim";
     status = "okay";
-    io-pins = <21>, <23>;
     sck-pin = <19>;
-    csn-pins = <12>;
-    spi_flash: flash@0 {
-        compatible = "nordic,qspi-nor";
+    mosi-pin = <21>;
+    miso-pin = <23>;
+
+    /* cs-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>; */
+    /* ili9340@0 { */
+    /*     compatible = "ilitek,ili9340"; */
+    /*     label = "DISPLAY"; */
+    /*     reg = <0>; */
+    /*     reset-gpios = <&gpio0 30 GPIO_ACTIVE_LOW>; */
+    /*     cmd-data-gpios = <&gpio0 5 GPIO_ACTIVE_LOW>; */
+    /*     spi-max-frequency = <12000000>; */
+    /* }; */
+    cs-gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>, <&gpio0 12 GPIO_ACTIVE_LOW>;
+    sharp: sharp_lcd@0 {
+        compatible = "sharp,ls0xx";
+        label = "DISPLAY";
         reg = <0>;
-        writeoc = "pp";
-        readoc = "fastread";
-        sck-frequency = <8000000>;
+        status = "okay";
+        spi-max-frequency = <1000000>;
+        height = <168>;
+        width = <144>;
+        extcomin-gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+        extcomin-frequency = <60>;
+        disp-en-gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
+    };
+    spi_flash: flash@1 {
+        compatible = "jedec,spi-nor";
+        reg = <1>;
+        spi-max-frequency = <8000000>;
         label = "MT25Q";
-        jedec-id = [1f 89 01];
+        jedec-id = [ef 40 18];
         size = <0x8000000>;
         has-dpd;
         t-enter-dpd = <3000>;
         t-exit-dpd = <30000>;
     };
 };
+
+/* &qspi { */
+/*     status = "okay"; */
+/*     io-pins = <21>, <23>; */
+/*     sck-pin = <19>; */
+/*     csn-pins = <12>; */
+/*     spi_flash: flash@0 { */
+/*         compatible = "nordic,qspi-nor"; */
+/*         reg = <0>; */
+/*         writeoc = "pp"; */
+/*         readoc = "fastread"; */
+/*         sck-frequency = <8000000>; */
+/*         label = "MT25Q"; */
+/*         jedec-id = [1f 89 01]; */
+/*         size = <0x8000000>; */
+/*         has-dpd; */
+/*         t-enter-dpd = <3000>; */
+/*         t-exit-dpd = <30000>; */
+/*     }; */
+/* }; */

@@ -11,7 +11,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 uint8_t flash_debug_enable = 0;
 #endif
 
-#define FLASH_DEVICE DT_LABEL(DT_INST(0, nordic_qspi_nor))
+/* #define FLASH_DEVICE DT_LABEL(DT_INST(0, nordic_qspi_nor)) */
+#define FLASH_DEVICE DT_LABEL(DT_INST(0, jedec_spi_nor))
 
 const struct device *flash_dev;
 

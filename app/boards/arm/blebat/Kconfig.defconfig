@@ -33,30 +33,33 @@ config ZMK_BATTERY_VOLTAGE_DIVIDER
 
 if ZMK_DISPLAY
 
-config I2C
-	default y
+# config I2C
+# 	default y
 
-config SSD1306
-	default y
+config LS0XX
+    default y
 
-config SSD1306_REVERSE_MODE
-	default y
+# config SSD1306
+# 	default y
+
+# config SSD1306_REVERSE_MODE
+# 	default y
 
 endif # ZMK_DISPLAY
 
 if LVGL
 
 config LVGL_HOR_RES_MAX
-	default 128
+	default 144
 
 config LVGL_VER_RES_MAX
-	default 64
+	default 168
 
 config LVGL_VDB_SIZE
-	default 64
+	default 16
 
 config LVGL_DPI
-	default 148
+	default 30
 
 config LVGL_BITS_PER_PIXEL
 	default 1
@@ -66,5 +69,13 @@ choice LVGL_COLOR_DEPTH
 endchoice
 
 endif
+
+config MACRO_KEY_INTERVAL_MS
+    int "Time interval between macro key presses and releases in microseconds"
+    default 3
+
+config MACRO_BUFFER_SIZE
+    int "Ring buffer size for macro key events"
+    default 256
 
 endif # BOARD_BLEBAT

@@ -14,12 +14,33 @@ extern int64_t steno_timestamp;
 #include <zmk/events/keycode_state_changed.h>
 
 #include <dt-bindings/zmk/keys.h>
+#include <sys/ring_buffer.h>
+#include <kernel.h>
+
+typedef struct __attribute__((packed)) {
+    bool down;
+    uint32_t key;
+} key_event_t;
+
+RING_BUF_DECLARE(macro_key_queue, CONFIG_MACRO_BUFFER_SIZE * sizeof(key_event_t));
+
+void macro_key_cb(struct k_timer *timer) {
+    key_event_t ev;
+    if (ring_buf_get(&macro_key_queue, (uint8_t *) &ev, sizeof(key_event_t))) {
+        ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(ev.key, ev.down, k_uptime_get()));
+    }
+}
+
+K_TIMER_DEFINE(macro_key_timer, macro_key_cb, NULL);
+
 static void register_code(uint32_t keycode) {
-    ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(keycode, true, steno_timestamp));
+    const key_event_t ev = { .down = true, .key = keycode };
+    ring_buf_put(&macro_key_queue, (const uint8_t *) &ev, sizeof(key_event_t));
 }
 
 static void unregister_code(uint32_t keycode) {
-    ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(keycode, false, steno_timestamp));
+    const key_event_t ev = { .down = false, .key = keycode };
+    ring_buf_put(&macro_key_queue, (const uint8_t *) &ev, sizeof(key_event_t));
 }
  
 static void tap_code(uint32_t keycode) {
@@ -29,6 +50,10 @@ static void tap_code(uint32_t keycode) {
 
 static void steno_back(void) {
     tap_code(BSPC);
+}
+
+void macro_init(void) {
+    k_timer_start(&macro_key_timer, K_MSEC(CONFIG_MACRO_KEY_INTERVAL_MS), K_MSEC(CONFIG_MACRO_KEY_INTERVAL_MS));
 }
 
 // !!! FROM QMK !!!
@@ -160,6 +185,47 @@ void hist_undo(const uint8_t h_ind) {
     return;
 }
 
+static uint8_t steno_send_keycodes(const uint8_t *keycodes, const uint8_t len) {
+#ifdef STENO_DEBUG_HIST
+    steno_debug("keys(%u):", len);
+#endif
+    uint8_t mods = 0;
+    for (uint8_t i = 0; i < len; i++) {
+        if ((keycodes[i] & 0xFC) == 0xE0) {
+            uint8_t mod = keycodes[i] & 0x03;
+            uint8_t mod_char;
+            switch (mod) {
+            case 0: mod_char = 'c'; break;
+            case 1: mod_char = 's'; break;
+            case 2: mod_char = 'a'; break;
+            case 3: mod_char = 'g'; break;
+            }
+            const uint8_t mod_mask = 1 << mod;
+            if (mods & mod_mask) {
+                unregister_code(keycodes[i]);
+#ifdef STENO_DEBUG_HIST
+                steno_debug(" %c", mod_char);
+#endif
+            } else {
+                register_code(keycodes[i]);
+#ifdef STENO_DEBUG_HIST
+                steno_debug(" %c", toupper(mod_char));
+#endif
+            }
+            mods ^= mod_mask;
+        } else {
+#ifdef STENO_DEBUG_HIST
+            steno_debug(" %02X", keycodes[i]);
+#endif
+            tap_code(keycodes[i]);
+        }
+    }
+#ifdef STENO_DEBUG_HIST
+    steno_debug("\n");
+#endif
+    return 0;
+}
+
 // Process the output. If it's a raw stroke (no nodes found for the input), then just output the stroke;
 // otherwise, load the entry, perform the necessary transformations for capitalization, and output according
 // to the bytes. Also takes care of outputting key codes and Unicode characters.
@@ -250,6 +316,18 @@ state_t process_output(const uint8_t h_ind) {
             steno_debug("'\n    ");
 #endif
             switch (entry[i]) {
+            case 0: // raw bytes of "length"
+                space = 0;
+                uint8_t len = entry[i + 1];
+                uint8_t keycode_len = steno_send_keycodes(entry + i + 2, len);
+                if (keycode_len > 0) {
+                    str_len += keycode_len;
+                } else {
+                    valid_len = 0;
+                }
+                i += len + 1;   // Not + 2 because of increment at the end of the loop
+                break;
+
             case 1: // lowercase next entry
                 new_state.cap = CAPS_LOWER;
 #ifdef STENO_DEBUG_HIST

@@ -36,3 +36,4 @@ typedef struct __attribute__((packed)) {
 void hist_undo(uint8_t h_ind);
 history_t *hist_get(uint8_t ind);
 state_t process_output(uint8_t h_ind);
+void macro_init(void);

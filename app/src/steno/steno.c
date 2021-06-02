@@ -66,5 +66,6 @@ void steno_process_stroke(uint32_t stroke, int64_t timestamp) {
 // Setup the necessary stuff, init SPI flash
 int steno_init(void) {
     hist_get(0)->state.cap = CAPS_CAP;
+    macro_init();
     return flash_init();
 }
