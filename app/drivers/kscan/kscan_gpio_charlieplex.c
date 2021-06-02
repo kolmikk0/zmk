@@ -66,9 +66,9 @@ static int kscan_matrix_read(const struct device *dev) {
             }
             const struct kscan_gpio_item_config *other_pin_config = &config->pins[o];
             err = gpio_pin_configure(data->pins[o], config->pins[o].pin,
-                    GPIO_INPUT | GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN);
+                    GPIO_OUTPUT_LOW | GPIO_ACTIVE_HIGH);
             if (err) {
-                LOG_ERR("Unable to configure pin %d on %s for input (err %d)",
+                LOG_ERR("Unable to configure pin %d on %s for inactive output (err %d)",
                         other_pin_config->pin, other_pin_config->label, err);
                 return err;
             }
@@ -78,6 +78,12 @@ static int kscan_matrix_read(const struct device *dev) {
                 continue;
             }
             const struct kscan_gpio_item_config *col_pin_config = &config->pins[c];
+            err = gpio_pin_configure(data->pins[c], col_pin_config->pin, GPIO_INPUT);
+            if (err < 0) {
+                LOG_ERR("Failed to configure pin %d on %s as hi Z input (err %d)",
+                        col_pin_config->pin, col_pin_config->label, err);
+                return err;
+            }
             err = gpio_pin_get(data->pins[c], col_pin_config->pin);
             if (err < 0) {
                 LOG_ERR("Failed to read input pin %d on %s (err %d)",
@@ -91,12 +97,13 @@ static int kscan_matrix_read(const struct device *dev) {
                 data->matrix_state[ind] = pressed;
                 data->callback(dev, r, c, pressed);
             }
-        }
-        err = gpio_pin_set(data->pins[r], config->pins[r].pin, 0);
-        if (err) {
-            LOG_ERR("Failed to set output pin %d on %s inactive (err %d)",
-                    row_pin_config->pin, row_pin_config->label, err);
-            return err;
+            err = gpio_pin_configure(data->pins[c], col_pin_config->pin,
+                    GPIO_OUTPUT_LOW | GPIO_ACTIVE_HIGH);
+            if (err) {
+                LOG_ERR("Unable to configure pin %d on %s for inactive output (err %d)",
+                        col_pin_config->pin, col_pin_config->label, err);
+                return err;
+            }
         }
     }
     return 0;
