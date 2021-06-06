@@ -1,18 +1,46 @@
 #ifndef _STENO_H_
 #define _STENO_H_
 
+#ifdef QMK_KEYBOARD
 #include "quantum.h"
+#include "config.h"
+#endif
 #include <stdint.h>
 #include "stroke.h"
 
-#include "config.h"
+// printf formatter for double-word (32-bits)
+#ifdef __AVR__
+#define DWF(s) "%" s "lX"
+#else
+#define DWF(s) "%" s "X"
+#endif
+
+#ifdef QMK_KEYBOARD
 
 #define steno_error(format, ...) xprintf(format, ##__VA_ARGS__)
 #define steno_error_ln(format, ...) xprintf(format "\n", ##__VA_ARGS__)
 #if STENO_DEBUG
 #define steno_debug(format, ...) xprintf(format, ##__VA_ARGS__)
 #define steno_debug_ln(format, ...) xprintf(format "\n", ##__VA_ARGS__)
-#else
+#endif
+#define log_strdup(s)
+
+#elif defined(CONFIG_ZMK_KEYBOARD_NAME)
+
+#include <logging/log.h>
+/* LOG_MODULE_DECLARE(steno, CONFIG_ZMK_EMBEDDED_STENO_LOG_LEVEL); */
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+
+#define steno_error(format, ...) LOG_ERR(format, ##__VA_ARGS__)
+#define steno_error_ln(format, ...) LOG_ERR(format, ##__VA_ARGS__)
+#if STENO_DEBUG
+#define steno_debug(format, ...) LOG_DBG(format, ##__VA_ARGS__)
+#define steno_debug_ln(format, ...) LOG_DBG(format, ##__VA_ARGS__)
+#endif
+
+#endif
+
+#ifndef STENO_DEBUG
 #define steno_debug(...)
 #define steno_debug_ln(...)
 #endif
@@ -25,6 +53,11 @@ extern uint8_t stroke_start_ind;
 void ebd_steno_init(void);
 void ebd_steno_process_stroke(const uint32_t stroke);
 
+#ifdef ZMK_KEYBOARD_NAME
+void steno_macro_init(void);
+#endif
+
+#ifdef QMK_KEYBOARD
 enum {
     STN__Z = SAFE_RANGE,
     STN__D,
@@ -50,5 +83,6 @@ enum {
     STN_S_,
     STN_NUM,
 };
+#endif
 
 #endif

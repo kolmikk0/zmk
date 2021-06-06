@@ -1,9 +1,3 @@
-/*
- * Copyright (c) 2020 The ZMK Contributors
- *
- * SPDX-License-Identifier: MIT
- */
-
 #define STN_NUM  22
 #define STN_S_   21
 #define STN_T_   20

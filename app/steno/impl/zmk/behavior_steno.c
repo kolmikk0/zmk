@@ -8,16 +8,11 @@
 
 #include <device.h>
 #include <drivers/behavior.h>
-#include <logging/log.h>
-#include <dt-bindings/zmk/steno.h>
+#include "steno_keys.h"
 
 #include <zmk/event_manager.h>
 #include <zmk/behavior.h>
-#include <zmk/steno/steno.h>
-
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
-
-#define FLASH_DEVICE DT_LABEL(DT_INST(0, nordic_qspi_nor))
+#include "steno.h"
 
 static uint32_t pressed = 0;
 static uint32_t current = 0;
@@ -27,7 +22,8 @@ static bool steno_key_valid(uint32_t key) {
 }
 
 static int behavior_steno_init(const struct device *dev) {
-    return steno_init();
+    ebd_steno_init();
+    return 0;
 }
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
@@ -37,7 +33,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     if (steno_key_valid(key)) {
         pressed |= 1 << key;
         current |= 1 << key;
-        return 0;
+        return ZMK_BEHAVIOR_OPAQUE;
     } else {
         return -ENOTSUP;
     }
@@ -52,10 +48,10 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
             char stroke[32];
             stroke_to_string(pressed, stroke, NULL);
             LOG_WRN("chord pressed: %06X, %s", pressed, log_strdup(stroke));
-            steno_process_stroke(pressed, event.timestamp);
+            ebd_steno_process_stroke(pressed);
             pressed = 0;
         }
-        return 0;
+        return ZMK_BEHAVIOR_OPAQUE;
     } else {
         return -ENOTSUP;
     }
@@ -65,5 +61,5 @@ static const struct behavior_driver_api behavior_steno_driver_api = {
     .binding_pressed = on_keymap_binding_pressed, .binding_released = on_keymap_binding_released
 };
 
-DEVICE_AND_API_INIT(behavior_steno, DT_INST_LABEL(0), behavior_steno_init, NULL, NULL, APPLICATION,
+DEVICE_DT_INST_DEFINE(0, behavior_steno_init, device_pm_control_nop, NULL, NULL, APPLICATION,
                     CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_steno_driver_api);

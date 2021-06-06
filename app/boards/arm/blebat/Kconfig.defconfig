@@ -70,12 +70,6 @@ endchoice
 
 endif
 
-config MACRO_KEY_INTERVAL_MS
-    int "Time interval between macro key presses and releases in microseconds"
-    default 3
-
-config MACRO_BUFFER_SIZE
-    int "Ring buffer size for macro key events"
-    default 256
+source "/home/steven/gitproj/zmk/app/steno/Kconfig"
 
 endif # BOARD_BLEBAT
