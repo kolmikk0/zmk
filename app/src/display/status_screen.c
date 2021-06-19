@@ -13,6 +13,8 @@
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+lv_style_t style;
+
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_BATTERY_STATUS)
 static struct zmk_widget_battery_status battery_status_widget;
 #endif
@@ -33,7 +35,8 @@ lv_obj_t *zmk_display_status_screen() {
     lv_obj_t *screen;
 
     screen = lv_obj_create(NULL, NULL);
-
+    lv_style_set_bg_color(&style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_obj_add_style(screen, LV_LABEL_PART_MAIN, &style);
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_BATTERY_STATUS)
     zmk_widget_battery_status_init(&battery_status_widget, screen);
     lv_obj_align(zmk_widget_battery_status_obj(&battery_status_widget), NULL, LV_ALIGN_IN_TOP_RIGHT,

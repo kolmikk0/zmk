@@ -27,7 +27,7 @@ void battery_status_init() {
 
     style_initialized = true;
     lv_style_init(&label_style);
-    lv_style_set_text_color(&label_style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_style_set_text_color(&label_style, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_style_set_text_font(&label_style, LV_STATE_DEFAULT, &lv_font_montserrat_16);
     lv_style_set_text_letter_space(&label_style, LV_STATE_DEFAULT, 1);
     lv_style_set_text_line_space(&label_style, LV_STATE_DEFAULT, 1);
