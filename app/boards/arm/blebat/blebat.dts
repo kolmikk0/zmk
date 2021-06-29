@@ -142,27 +142,6 @@
     };
 };
 
-/* &i2c0 { */
-/*     /1* status = "okay"; *1/ */
-/*     compatible = "nordic,nrf-twi"; */
-/*     sda-pin = <32>; */
-/*     scl-pin = <22>; */
-
-/*     oled: ssd1306@3c { */
-/*         compatible = "solomon,ssd1306fb"; */
-/*         reg = <0x3c>; */
-/*         label = "DISPLAY"; */
-/*         width = <128>; */
-/*         height = <64>; */
-/*         segment-offset = <0>; */
-/*         page-offset = <0>; */
-/*         display-offset = <0>; */
-/*         multiplex-ratio = <63>; */
-/*         prechargep = <0x22>; */
-/*         segment-remap; */
-/*         com-invdir; */
-/*     }; */
-/* }; */
 
 &spi0 {
     compatible = "nordic,nrf-spim";
@@ -204,23 +183,3 @@
         t-exit-dpd = <30000>;
     };
 };
-
-/* &qspi { */
-/*     status = "okay"; */
-/*     io-pins = <21>, <23>; */
-/*     sck-pin = <19>; */
-/*     csn-pins = <12>; */
-/*     spi_flash: flash@0 { */
-/*         compatible = "nordic,qspi-nor"; */
-/*         reg = <0>; */
-/*         writeoc = "pp"; */
-/*         readoc = "fastread"; */
-/*         sck-frequency = <8000000>; */
-/*         label = "MT25Q"; */
-/*         jedec-id = [1f 89 01]; */
-/*         size = <0x8000000>; */
-/*         has-dpd; */
-/*         t-enter-dpd = <3000>; */
-/*         t-exit-dpd = <30000>; */
-/*     }; */
-/* }; */
