@@ -35,7 +35,7 @@ lv_obj_t *zmk_display_status_screen() {
     lv_obj_t *screen;
 
     screen = lv_obj_create(NULL, NULL);
-    lv_style_set_bg_color(&style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_style_set_bg_color(&style, LV_STATE_DEFAULT, LV_COLOR_WHITE);
     lv_obj_add_style(screen, LV_LABEL_PART_MAIN, &style);
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_BATTERY_STATUS)
     zmk_widget_battery_status_init(&battery_status_widget, screen);
