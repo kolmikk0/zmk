@@ -24,6 +24,14 @@ struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
     return (struct wpm_status_state){.wpm = zmk_wpm_get_state()};
 };
 
+    /* style_initialized = true; */
+    /* lv_style_init(&label_style); */
+    /* lv_style_set_text_color(&label_style, LV_STATE_DEFAULT, LV_COLOR_BLACK); */
+    /* lv_style_set_text_font(&label_style, LV_STATE_DEFAULT, &lv_font_montserrat_16); */
+    /* lv_style_set_text_letter_space(&label_style, LV_STATE_DEFAULT, 1); */
+    /* lv_style_set_text_line_space(&label_style, LV_STATE_DEFAULT, 1); */
+/* } */
+
 void set_wpm_symbol(lv_obj_t *label, struct wpm_status_state state) {
     char text[4] = {};
 
