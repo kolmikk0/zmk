@@ -81,8 +81,8 @@
         raise {
             bindings = <
 &kp C_BRI_DN &kp C_MUTE  &kp C_VOL_DN &kp C_VOL_UP  &kp C_BRI_UP  &kp HOME      &kp PG_DN     &kp PG_UP    &kp END       &kp PRSC    &none
-&none        &tog STENO  &none        &none         &none         &kp LEFT      &kp DOWN      &kp UP       &kp RIGHT     &none       &none
-&none        &kp K_PREV  &kp K_PP     &kp K_NEXT    &none         &kp LC(LEFT)  &kp LC(DOWN)  &kp LC(UP)   &kp LC(RIGHT) &none
+&out OUT_BLE &tog STENO  &bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &kp LEFT      &kp DOWN      &kp UP       &kp RIGHT     &none       &none
+&out OUT_USB &kp K_PREV  &kp K_PP     &kp K_NEXT    &bt BT_CLR    &kp LC(LEFT)  &kp LC(DOWN)  &kp LC(UP)   &kp LC(RIGHT) &none
                          &trans       &trans        &trans        &trans        &trans        &trans
             >;
         };
