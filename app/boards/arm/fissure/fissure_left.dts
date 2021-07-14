@@ -1,1 +1,5 @@
-fissure.dts
+#include "fissure.dts"
+
+&transform {
+    col-offset = <20>;
+};
