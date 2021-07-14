@@ -18,6 +18,7 @@
         zephyr,flash = &flash0;
         zmk,kscan = &kscan0;
 		zmk,matrix_transform = &transform;
+		/* zmk,underglow = &neopixel; */
     };
 
 #define K(n) RC(0,n)
@@ -67,7 +68,7 @@ K(32) K(33) K(34) K(35) K(36)  K(16) K(15) K(14) K(13) K(12)
     leds {
         compatible = "gpio-leds";
         blue_led: led_0 {
-            gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+            gpios = <&gpio1 04 GPIO_ACTIVE_HIGH>;
             label = "Blue LED";
         };
     };
@@ -81,7 +82,7 @@ K(32) K(33) K(34) K(35) K(36)  K(16) K(15) K(14) K(13) K(12)
     vbatt {
         compatible = "zmk,battery-voltage-divider";
         label = "BATTERY";
-        io-channels = <&adc 4>;
+        io-channels = <&adc 1>;
         output-ohms = <2000000>;
         full-ohms = <(2000000 + 2000000)>;
     };
@@ -168,10 +169,50 @@ K(32) K(33) K(34) K(35) K(36)  K(16) K(15) K(14) K(13) K(12)
 /*     }; */
 /* }; */
 
-/* &i2c0 { */
-/*     compatible = "nordic,nrf-twim"; */
-/*     status = "okay"; */
-/*     reg = <0x3c>; */
-/*     sda-pin = <32>; */
-/*     scl-pin = <22>; */
+&i2c0 {
+    compatible = "nordic,nrf-twi";
+    status = "okay";
+    sda-pin = <32>;
+    scl-pin = <22>;
 
+	oled: ssd1306@3c {
+		compatible = "solomon,ssd1306fb";
+        status = "okay";
+		reg = <0x3c>;
+		label = "DISPLAY";
+		width = <128>;
+		height = <32>;
+		segment-offset = <0>;
+		page-offset = <0>;
+		display-offset = <0>;
+		multiplex-ratio = <31>;
+		segment-remap;
+		com-invdir;
+		com-sequential;
+		prechargep = <0x22>;
+	};
+};
+
+/* &spi1 { */
+/* 	compatible = "nordic,nrf-spim"; */
+/* 	/1* Cannot be used together with i2c0. *1/ */
+/* 	status = "okay"; */
+/* 	mosi-pin = <19>; */
+/* 	// Unused pins, needed for SPI definition, but not used by the ws2812 driver itself. */
+/* 	sck-pin = <6>; */
+/* 	miso-pin = <11>; */
+
+/* 	neopixel: ws2812@0 { */
+/* 		compatible = "worldsemi,ws2812-spi"; */
+/* 		label = "SK6812mini"; */
+
+/* 		/1* SPI *1/ */
+/* 		reg = <0>; /1* ignored, but necessary for SPI bindings *1/ */
+/* 		spi-max-frequency = <4000000>; */
+
+/* 		/1* WS2812 *1/ */
+/* 		chain-length = <1>; */
+/* 		spi-one-frame = <0x70>; */
+/* 		spi-zero-frame = <0x40>; */
+/* 	}; */
+/* }; */
