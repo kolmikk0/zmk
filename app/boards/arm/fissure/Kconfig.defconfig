@@ -1,14 +1,9 @@
 # Copyright (c) 2020 Pete Johanson
 # SPDX-License-Identifier: MIT
 
-if BOARD_FISSURE_LEFT
-config ZMK_KEYBOARD_NAME
-	default "Fissure Left"
-endif
-
 if BOARD_FISSURE_RIGHT
 config ZMK_KEYBOARD_NAME
-	default "Fissure Right"
+	default "Fissure"
 endif
 
 if BOARD_FISSURE_LEFT || BOARD_FISSURE_RIGHT
