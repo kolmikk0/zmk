@@ -72,11 +72,8 @@ choice LVGL_COLOR_DEPTH
 	default LVGL_COLOR_DEPTH_1
 endchoice
 
-# config LVGL_DPI
-# 	default 180
-
 endif
 
-# source "/home/steven/gitproj/zmk/app/steno/Kconfig"
+source "/home/steven/gitproj/zmk/app/steno/Kconfig"
 
 endif

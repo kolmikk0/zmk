@@ -18,7 +18,7 @@
         zephyr,flash = &flash0;
         zmk,kscan = &kscan0;
 		zmk,matrix_transform = &transform;
-		/* zmk,underglow = &neopixel; */
+        zmk,steno_flash = &steno_flash;
     };
 
 #define K(n) RC(0,n)
@@ -149,32 +149,31 @@ K(32) K(33) K(34) K(35) K(36)  K(16) K(15) K(14) K(13) K(12)
     };
 };
 
-/* &qspi { */
-/*     status = "okay"; */
-/*     sck-pin = <26>; */
-/*     io-pins = <8>, <40>; */
-/*     csn-pins = <25>; */
-/*     nor-flash { */
-/*         compatible = "nordic,qspi-nor"; */
-/*         label = "steno flash"; */
-/*         status = "okay"; */
-/*         sck-delay = <2>; */
-/*         sck-frequency = <8000000> */
-
-/*         jedec-id = [20 ba 18]; */
-/*         size = <0x8000000>; */
-/*         has-dpd; */
-/*         t-enter-dpd = <3000>; */
-/*         t-exit-dpd = <30000>; */
-/*     }; */
-/* }; */
+&qspi {
+    status = "okay";
+    sck-pin = <26>;
+    io-pins = <8>, <40>;
+    csn-pins = <25>;
+    steno_flash: nor-flash@0 {
+        reg = <0>;
+        compatible = "nordic,qspi-nor";
+        label = "steno flash";
+        status = "okay";
+        sck-delay = <2>;
+        sck-frequency = <8000000>;
+        jedec-id = [20 ba 18];
+        size = <0x8000000>;
+        has-dpd;
+        t-enter-dpd = <3000>;
+        t-exit-dpd = <30000>;
+    };
+};
 
 &i2c0 {
     compatible = "nordic,nrf-twi";
     status = "okay";
     sda-pin = <32>;
     scl-pin = <22>;
-
 	oled: ssd1306@3c {
 		compatible = "solomon,ssd1306fb";
         status = "okay";
@@ -192,27 +191,3 @@ K(32) K(33) K(34) K(35) K(36)  K(16) K(15) K(14) K(13) K(12)
 		prechargep = <0x22>;
 	};
 };
-
-/* &spi1 { */
-/* 	compatible = "nordic,nrf-spim"; */
-/* 	/1* Cannot be used together with i2c0. *1/ */
-/* 	status = "okay"; */
-/* 	mosi-pin = <19>; */
-/* 	// Unused pins, needed for SPI definition, but not used by the ws2812 driver itself. */
-/* 	sck-pin = <6>; */
-/* 	miso-pin = <11>; */
-
-/* 	neopixel: ws2812@0 { */
-/* 		compatible = "worldsemi,ws2812-spi"; */
-/* 		label = "SK6812mini"; */
-
-/* 		/1* SPI *1/ */
-/* 		reg = <0>; /1* ignored, but necessary for SPI bindings *1/ */
-/* 		spi-max-frequency = <4000000>; */
-
-/* 		/1* WS2812 *1/ */
-/* 		chain-length = <1>; */
-/* 		spi-one-frame = <0x70>; */
-/* 		spi-zero-frame = <0x40>; */
-/* 	}; */
-/* }; */
