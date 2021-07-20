@@ -33,20 +33,13 @@ config ZMK_BATTERY_VOLTAGE_DIVIDER
 
 if ZMK_DISPLAY
 
-# config I2C
-# 	default y
-
-# config LS0XX
-#     default y
-
 config ILI9340
     default y
 
-# config SSD1306
-# 	default y
+choice ZMK_DISPLAY_STATUS_SCREEN
+	default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
 
-# config SSD1306_REVERSE_MODE
-# 	default y
+endchoice
 
 endif # ZMK_DISPLAY
 
@@ -67,9 +60,9 @@ config LVGL_DPI
 # config LVGL_BITS_PER_PIXEL
 # 	default 1
 
-# choice LVGL_COLOR_DEPTH
-# 	default LVGL_COLOR_DEPTH_1
-# endchoice
+choice LVGL_COLOR_DEPTH
+	default LVGL_COLOR_DEPTH_32
+endchoice
 
 endif
 
