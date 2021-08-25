@@ -22,14 +22,17 @@ struct layer_status_state {
     const char *label;
 };
 
+/* LV_FONT_DECLARE(jbmono_12); */
+
 /* void layer_status_init() { */
 /*     if (style_initialized) { */
 /*         return; */
 /*     } */
+
 /*     style_initialized = true; */
 /*     lv_style_init(&label_style); */
-/*     lv_style_set_text_color(&label_style, LV_STATE_DEFAULT, LV_COLOR_BLACK); */
-/*     lv_style_set_text_font(&label_style, LV_STATE_DEFAULT, &lv_font_montserrat_16); */
+/*     lv_style_set_text_color(&label_style, LV_STATE_DEFAULT, LV_COLOR_WHITE); */
+/*     lv_style_set_text_font(&label_style, LV_STATE_DEFAULT, &jbmono_12); */
 /*     lv_style_set_text_letter_space(&label_style, LV_STATE_DEFAULT, 1); */
 /*     lv_style_set_text_line_space(&label_style, LV_STATE_DEFAULT, 1); */
 /* } */
@@ -79,15 +82,3 @@ int zmk_widget_layer_status_init(struct zmk_widget_layer_status *widget, lv_obj_
 lv_obj_t *zmk_widget_layer_status_obj(struct zmk_widget_layer_status *widget) {
     return widget->obj;
 }
-<<<<<<< HEAD
-=======
-
-int layer_status_listener(const zmk_event_t *eh) {
-    struct zmk_widget_layer_status *widget;
-    SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_layer_symbol(widget->obj); }
-    return 0;
-}
-
-ZMK_LISTENER(widget_layer_status, layer_status_listener)
-ZMK_SUBSCRIPTION(widget_layer_status, zmk_layer_state_changed);
->>>>>>> d7f9714f (Use ILI9340 instead of LS0XX)

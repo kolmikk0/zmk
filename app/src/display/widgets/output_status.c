@@ -37,14 +37,17 @@ static struct output_status_state get_state(const zmk_event_t *_eh) {
                                         .active_profile_index = zmk_ble_active_profile_index()};
 }
 
+/* LV_FONT_DECLARE(jbmono_12); */
+
 /* void output_status_init() { */
 /*     if (style_initialized) { */
 /*         return; */
 /*     } */
+
 /*     style_initialized = true; */
 /*     lv_style_init(&label_style); */
 /*     lv_style_set_text_color(&label_style, LV_STATE_DEFAULT, LV_COLOR_WHITE); */
-/*     lv_style_set_text_font(&label_style, LV_STATE_DEFAULT, &lv_font_montserrat_16); */
+/*     lv_style_set_text_font(&label_style, LV_STATE_DEFAULT, &jbmono_12); */
 /*     lv_style_set_text_letter_space(&label_style, LV_STATE_DEFAULT, 1); */
 /*     lv_style_set_text_line_space(&label_style, LV_STATE_DEFAULT, 1); */
 /* } */
