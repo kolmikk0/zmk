@@ -37,23 +37,25 @@
 #define CONCAT2(x, y) x ## y
 #define CONCAT(x, y) CONCAT2(x, y)
 #define COMBO(pos, k) CONCAT(combo, __COUNTER__) { key-positions = <pos>; bindings = <&kp k>; layers = <0 1 2 3>; timeout-ms = <60>; };
+        COMBO(1 2, PERCENT)
         COMBO(2 3, BSLH)
         COMBO(3 4, LBKT)
         COMBO(7 8, RBKT)
-        COMBO(8 9, PLUS)
+        COMBO(8 9, EQUAL)
+        COMBO(9 10, PLUS)
 
         COMBO(13 14, CARET)
         COMBO(14 15, DOLLAR)
         COMBO(15 16, LPAR)
         COMBO(19 20, RPAR)
-        COMBO(20 21, EQUAL)
+        COMBO(20 21, SEMI)
         COMBO(21 22, COLON)
 
         COMBO(24 25, EXCL)
         COMBO(25 26, AT)
         COMBO(26 27, LBRC)
         COMBO(30 31, RBRC)
-        COMBO(31 32, PERCENT)
+        COMBO(31 32, FSLH)
         COMBO(32 33, QMARK)
 
         COMBO(2 14, GRAVE)
@@ -81,8 +83,8 @@
         base {
             bindings = <
 &none     &kp Q        &kp W       &kp E        &kp R         &kp T         &kp Y         &kp U         &kp I        &kp O         &kp P       &none
-&none     &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp J         &kp K        &kp L         &kp SEMI    &none
-          &kp Z        &kp X       &kp C        &kp V         &kp B         &kp N         &kp M         &kp COMMA    &kp DOT       &kp FSLH
+&none     &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp J         &kp K        &kp L         &kp N       &none
+          &kp Z        &kp X       &kp C        &kp V         &none         &none         &kp M         &kp COMMA    &kp DOT       &kp B
                                    &mm LGUI DEL &mm LCTRL TAB &ml RAISE ESC &ml LOWER RET &mm LSHFT SPC &mm LALT BSPC
             >;
         };
@@ -106,9 +108,9 @@
 
         game {
             bindings = <
-&kp SPC   &trans       &trans      &trans       &trans        &trans        &trans        &trans        &trans       &trans        &trans      &none
-&kp TAB   &trans       &trans      &trans       &trans        &trans        &trans        &trans        &trans       &trans        &trans      &tog GAME
-          &trans       &trans      &trans       &trans        &trans        &trans        &trans        &trans       &trans        &trans  
+&kp SPC   &kp Q        &kp W       &kp E        &kp R         &kp T         &kp Y         &kp U         &kp I        &kp O         &kp P       &none
+&kp TAB   &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp J         &kp K        &kp L         &kp SEMI    &tog GAME
+          &kp Z        &kp X       &kp C        &kp V         &kp B         &kp N         &kp M         &kp COMMA    &kp DOT       &kp FSLH
                                    &kp LALT     &kp LCTRL     &kp ESC       &trans        &trans        &trans
             >;
         };
