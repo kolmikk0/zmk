@@ -83,8 +83,8 @@
         base {
             bindings = <
 &none     &kp Q        &kp W       &kp E        &kp R         &kp T         &kp Y         &kp U         &kp I        &kp O         &kp P       &none
-&none     &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp J         &kp K        &kp L         &kp N       &none
-          &kp Z        &kp X       &kp C        &kp V         &none         &none         &kp M         &kp COMMA    &kp DOT       &kp B
+&none     &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp N         &kp K        &kp L         &kp B       &none
+          &kp Z        &kp X       &kp C        &kp V         &none         &none         &kp M         &kp COMMA    &kp DOT       &kp J
                                    &mm LGUI DEL &mm LCTRL TAB &ml RAISE ESC &ml LOWER RET &mm LSHFT SPC &mm LALT BSPC
             >;
         };
@@ -108,8 +108,8 @@
 
         game {
             bindings = <
-&kp SPC   &kp Q        &kp W       &kp E        &kp R         &kp T         &kp Y         &kp U         &kp I        &kp O         &kp P       &none
-&kp TAB   &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp J         &kp K        &kp L         &kp SEMI    &tog GAME
+&kp SPC   &kp Q        &kp W       &kp E        &kp R         &kp T         &kp Y         &kp U         &kp I        &kp O         &kp P       &tog GAME
+&kp TAB   &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp J         &kp K        &kp L         &kp SEMI    &kp RET
           &kp Z        &kp X       &kp C        &kp V         &kp B         &kp N         &kp M         &kp COMMA    &kp DOT       &kp FSLH
                                    &kp LALT     &kp LCTRL     &kp ESC       &trans        &trans        &trans
             >;
