@@ -9,8 +9,8 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-    model = "folded_bat";
-    compatible = "folded_bat";
+    model = "fusion_h";
+    compatible = "fusion_h";
 
     chosen {
         zephyr,code-partition = &code_partition;
