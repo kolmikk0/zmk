@@ -1,5 +1,5 @@
-identifier: folded_bat
-name: folded_bat
+identifier: fusion_h
+name: fusion_h
 type: mcu
 arch: arm
 toolchain:
