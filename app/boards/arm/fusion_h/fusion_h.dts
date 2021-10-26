@@ -60,6 +60,8 @@ RC(8,0) RC(8,1)
         compatible = "zmk,kscan-gpio-matrix";
         label = "matrix_kscan";
 		diode-direction = "row2col";
+        debounce-press-ms = <2>;
+        debounce-release-ms = <4>;
 		row-gpios
             = <&gpio0  9 GPIO_ACTIVE_HIGH>
             , <&gpio1  6 GPIO_ACTIVE_HIGH>
