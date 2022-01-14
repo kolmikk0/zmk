@@ -79,3 +79,15 @@ int zmk_widget_layer_status_init(struct zmk_widget_layer_status *widget, lv_obj_
 lv_obj_t *zmk_widget_layer_status_obj(struct zmk_widget_layer_status *widget) {
     return widget->obj;
 }
+<<<<<<< HEAD
+=======
+
+int layer_status_listener(const zmk_event_t *eh) {
+    struct zmk_widget_layer_status *widget;
+    SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_layer_symbol(widget->obj); }
+    return 0;
+}
+
+ZMK_LISTENER(widget_layer_status, layer_status_listener)
+ZMK_SUBSCRIPTION(widget_layer_status, zmk_layer_state_changed);
+>>>>>>> d7f9714f (Use ILI9340 instead of LS0XX)

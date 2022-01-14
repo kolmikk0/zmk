@@ -35,8 +35,19 @@ static struct output_status_state get_state(const zmk_event_t *_eh) {
                                             zmk_ble_active_profile_is_connected(),
                                         .active_profile_bonded = !zmk_ble_active_profile_is_open(),
                                         .active_profile_index = zmk_ble_active_profile_index()};
-    ;
 }
+
+/* void output_status_init() { */
+/*     if (style_initialized) { */
+/*         return; */
+/*     } */
+/*     style_initialized = true; */
+/*     lv_style_init(&label_style); */
+/*     lv_style_set_text_color(&label_style, LV_STATE_DEFAULT, LV_COLOR_WHITE); */
+/*     lv_style_set_text_font(&label_style, LV_STATE_DEFAULT, &lv_font_montserrat_16); */
+/*     lv_style_set_text_letter_space(&label_style, LV_STATE_DEFAULT, 1); */
+/*     lv_style_set_text_line_space(&label_style, LV_STATE_DEFAULT, 1); */
+/* } */
 
 static void set_status_symbol(lv_obj_t *label, struct output_status_state state) {
     char text[9] = {};
