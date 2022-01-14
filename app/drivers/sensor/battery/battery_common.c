@@ -35,9 +35,11 @@ uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
 
     if (bat_mv >= 4200) {
         return 100;
-    } else if (bat_mv <= 3450) {
+    } else if (bat_mv <= 3350) {
         return 0;
+    } else if (bat_mv <= 3600) {
+        return (bat_mv - 3350) / 30;
+    } else {
+        return bat_mv * 15 / 100 + 10;
     }
-
-    return bat_mv * 2 / 15 - 459;
 }
