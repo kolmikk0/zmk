@@ -71,6 +71,10 @@ K(26) K(27) K(28) K(29) K(30) K(31)  K(11) K(10) K(9)  K(8)  K(7)  K(6)
             gpios = <&gpio1 04 GPIO_ACTIVE_HIGH>;
             label = "Blue LED";
         };
+        red_led: led_1 {
+            gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
+            label = "Red LED";
+        };
     };
 
     ext-power {
@@ -167,27 +171,4 @@ K(26) K(27) K(28) K(29) K(30) K(31)  K(11) K(10) K(9)  K(8)  K(7)  K(6)
         t-enter-dpd = <3000>;
         t-exit-dpd = <30000>;
     };
-};
-
-&i2c0 {
-    compatible = "nordic,nrf-twi";
-    status = "okay";
-    sda-pin = <32>;
-    scl-pin = <22>;
-	oled: ssd1306@3c {
-		compatible = "solomon,ssd1306fb";
-        status = "okay";
-		reg = <0x3c>;
-		label = "DISPLAY";
-		width = <128>;
-		height = <32>;
-		segment-offset = <0>;
-		page-offset = <0>;
-		display-offset = <0>;
-		multiplex-ratio = <31>;
-		segment-remap;
-		com-invdir;
-		com-sequential;
-		prechargep = <0x22>;
-	};
 };
