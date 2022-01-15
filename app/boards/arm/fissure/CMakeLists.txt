@@ -8,3 +8,4 @@ set_property(GLOBAL APPEND PROPERTY extra_post_build_commands
 )
 zephyr_library()
 zephyr_library_sources(led_widgets.c)
+zephyr_library_include_directories(${CMAKE_SOURCE_DIR}/include)
