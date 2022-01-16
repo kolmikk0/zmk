@@ -69,15 +69,15 @@ K(26) K(27) K(28) K(29) K(30) K(31)  K(11) K(10) K(9)  K(8)  K(7)  K(6)
         compatible = "pwm-leds";
         label = "leds";
         red_led: led_0 {
-            pwms = <&pwm0 0>;
+            pwms = <&pwm0 19>;
             label = "Red LED";
         };
         green_led: led_1 {
-            pwms = <&pwm0 1>;
+            pwms = <&pwm0 7>;
             label = "Green LED";
         };
         blue_led: led_2 {
-            pwms = <&pwm0 2>;
+            pwms = <&pwm0 36>;
             label = "Blue LED";
         };
     };
