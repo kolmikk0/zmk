@@ -221,100 +221,29 @@ static void loop_timer_handler(struct k_timer *timer) {
     led_widget_schedule(ev, last_widgets_ind[ev]);
 }
 
-#define widget_handler(TYPE, EV, EV_VAR, MEMBER, CMP, MSG) \
-    const struct TYPE *EV_VAR = as_##TYPE(EV_VAR); \
-    if (EV_VAR) { \
-        const uint8_t match = EV_VAR->MEMBER; \
-        for (uint8_t i = 0; i < ARRAY_SIZE(widgets[LED_EVENT_BATTERY]); i ++) { \
+#define widget_handler(TYPE, EV, MEMBER, EXPR, CMP, MSG) \
+    const struct TYPE *EV##_ev = as_##TYPE(ev); \
+    if (EV##_ev) { \
+        const uint8_t match = COND_CODE_0(IS_EMPTY(MEMBER), (EV##_ev->MEMBER), (EXPR)); \
+        for (uint8_t i = 0; i < ARRAY_SIZE(widgets[LED_EVENT_##EV]); i ++) { \
             LOG_WRN(MSG, match); \
-            if (match CMP widgets[EV][i].arg) { \
-                led_widget_schedule(EV, i); \
+            if (match CMP widgets[LED_EVENT_##EV][i].arg) { \
+                led_widget_schedule(LED_EVENT_##EV, i); \
                 return ZMK_EV_EVENT_BUBBLE; \
             } \
         } \
-        active_widgets_ind[EV] = -1; \
+        active_widgets_ind[LED_EVENT_##EV] = -1; \
         k_delayed_work_submit(&led_widget_work, K_NO_WAIT); \
         return ZMK_EV_EVENT_BUBBLE; \
     }
 
 static int led_widgets_event_listener(const zmk_event_t *ev) {
-    const struct zmk_battery_state_changed *bat_ev = as_zmk_battery_state_changed(ev);
-    if (bat_ev) {
-        const uint8_t level = bat_ev->state_of_charge;
-        for (uint8_t i = 0; i < ARRAY_SIZE(widgets[LED_EVENT_BATTERY]); i ++) {
-            LOG_WRN("bat level %u", level);
-            if (level < widgets[LED_EVENT_BATTERY][i].arg) {
-                led_widget_schedule(LED_EVENT_BATTERY, i);
-                return ZMK_EV_EVENT_BUBBLE;
-            }
-        }
-        active_widgets_ind[LED_EVENT_BATTERY] = -1;
-        k_delayed_work_submit(&led_widget_work, K_NO_WAIT);
-        return ZMK_EV_EVENT_BUBBLE;
-    }
-    
-/* #ifdef CONFIG_USB */
-/*     const struct zmk_usb_conn_state_changed *usb_ev = as_zmk_usb_conn_state_changed(ev); */
-/*     if (usb_ev) { */
-/*         const zmk_usb_conn_state conn_state = usb_ev->conn_state; */
-/*         for (uint8_t i = 0; i < ARRAY_SIZE(widgets[LED_EVENT_CONN]); i ++) { */
-/*             if (conn_state == widgets[LED_EVENT_CONN][i].arg) { */
-/*                 led_widget_schedule(LED_EVENT_CONN, i); */
-/*                 return ZMK_EV_EVENT_BUBBLE; */
-/*             } */
-/*         } */
-/*         k_delayed_work_submit(&led_widget_work, 0); */
-/*         return ZMK_EV_EVENT_BUBBLE; */
-/*     } */
-/* #endif */
-
+    widget_handler(zmk_battery_state_changed, BATTERY, state_of_charge,, <, "bat level %u");
 #ifdef CONFIG_ZMK_BLE
-    const struct zmk_ble_active_profile_changed *ble_ev = as_zmk_ble_active_profile_changed(ev);
-    if (ble_ev) {
-        const uint8_t index = ble_ev->index;
-        LOG_WRN("ble profile %u", index);
-        for (uint8_t i = 0; i < ARRAY_SIZE(widgets[LED_EVENT_PROFILE]); i ++) {
-            if (index == widgets[LED_EVENT_PROFILE][i].arg) {
-                led_widget_schedule(LED_EVENT_PROFILE, i);
-                return ZMK_EV_EVENT_BUBBLE;
-            }
-        }
-        active_widgets_ind[LED_EVENT_PROFILE] = -1;
-        k_delayed_work_submit(&led_widget_work, K_NO_WAIT);
-        return ZMK_EV_EVENT_BUBBLE;
-    }
+    widget_handler(zmk_ble_active_profile_changed, PROFILE, index,, ==, "ble profile %u");
 #endif
-
-    const struct zmk_layer_state_changed *layer_ev = as_zmk_layer_state_changed(ev);
-    if (layer_ev) {
-        const uint8_t layer = zmk_keymap_highest_layer_active();
-        LOG_WRN("layer %u", layer);
-        for (uint8_t i = 0; i < ARRAY_SIZE(widgets[LED_EVENT_LAYER]); i ++) {
-            if (layer == widgets[LED_EVENT_LAYER][i].arg) {
-                led_widget_schedule(LED_EVENT_LAYER, i);
-                return ZMK_EV_EVENT_BUBBLE;
-            }
-        }
-        active_widgets_ind[LED_EVENT_LAYER] = -1;
-        k_delayed_work_submit(&led_widget_work, K_NO_WAIT);
-        return ZMK_EV_EVENT_BUBBLE;
-    }
-
-    const struct zmk_endpoint_selection_changed *ep_ev = as_zmk_endpoint_selection_changed(ev);
-    if (ep_ev) {
-        const enum zmk_endpoint endpoint = ep_ev->endpoint;
-        LOG_WRN("endpoint %u", endpoint);
-        for (uint8_t i = 0; i < ARRAY_SIZE(widgets[LED_EVENT_OUTPUT]); i ++) {
-            if (endpoint == widgets[LED_EVENT_OUTPUT][i].arg) {
-                led_widget_schedule(LED_EVENT_OUTPUT, i);
-                return ZMK_EV_EVENT_BUBBLE;
-            }
-        }
-        active_widgets_ind[LED_EVENT_OUTPUT] = -1;
-        k_delayed_work_submit(&led_widget_work, K_NO_WAIT);
-        return ZMK_EV_EVENT_BUBBLE;
-    }
-
+    widget_handler(zmk_layer_state_changed, LAYER,, zmk_keymap_highest_layer_active(), ==, "layer %u");
+    widget_handler(zmk_endpoint_selection_changed, OUTPUT, endpoint,, ==, "endpoint %u");
     return ZMK_EV_EVENT_BUBBLE;
 }
 
