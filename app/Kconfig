@@ -428,11 +428,17 @@ config ZMK_USB_LOGGING
 	select UART_CONSOLE
 	select USB_UART_CONSOLE
 
-if ZMK_USB_LOGGING
-
 config ZMK_LOG_LEVEL
     int "ZMK Logging level"
 	default 4
+
+config LOG_BUFFER_SIZE
+	default 8192
+
+config LOG_STRDUP_BUF_COUNT
+	default 16
+
+if ZMK_USB_LOGGING
 
 config USB_CDC_ACM_RINGBUF_SIZE
 	default 1024
@@ -445,12 +451,6 @@ config USB_CDC_ACM_DEVICE_COUNT
 
 config UART_CONSOLE_ON_DEV_NAME
 	default "CDC_ACM_0"
-
-config LOG_BUFFER_SIZE
-	default 8192
-
-config LOG_STRDUP_BUF_COUNT
-	default 16
 
 #ZMK_USB_LOGGING
 endif

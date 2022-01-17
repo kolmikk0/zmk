@@ -62,10 +62,11 @@ static void led_widget_work_cb(struct k_work *work);
 static K_DELAYED_WORK_DEFINE(led_widget_work, led_widget_work_cb);
 static led_state_t state = LED_STATE_IDLE;
 static int8_t active_widget_type = -1;
-static int8_t active_widgets_ind[LED_EVENT_SIZE] = {-1};
-static int8_t last_widgets_ind[LED_EVENT_SIZE] = {-1};
+static int8_t active_widgets_ind[LED_EVENT_SIZE];
+static int8_t last_widgets_ind[LED_EVENT_SIZE];
 static uint8_t led_cmd_ind = 0;
 static struct k_timer loop_timers[LED_EVENT_SIZE];
+static bool loop_timer_started[LED_EVENT_SIZE];
 
 static const struct device *leds = DEVICE_DT_GET(DT_NODELABEL(leds));
 static const uint8_t _child_ords[] = { _CONCAT(DT_NODELABEL(leds), _SUPPORTS_ORDS) };
@@ -74,9 +75,9 @@ _Static_assert(NUM_LEDS == 3, "leds");
 
 static const led_widget_t widgets[][4] = {
     [LED_EVENT_BATTERY] = {
-        { 100, 50, S_TO_TICK(120), 1, { { 1, 100, MS_TO_TICK(50) }, }, },
-        { 70, 50, S_TO_TICK(120), 2, { { 1, 50, MS_TO_TICK(50) }, { 0, 100, MS_TO_TICK(50) }, }, },
-        { 30, 50, S_TO_TICK(120), 2, { { 1, 20, MS_TO_TICK(500) }, { 0, 200, MS_TO_TICK(50) }, }, },
+        { 100, 50, S_TO_TICK(30), 1, { { 1, 100, MS_TO_TICK(50) }, }, },
+        { 70, 50, S_TO_TICK(30), 2, { { 1, 50, MS_TO_TICK(50) }, { 0, 100, MS_TO_TICK(50) }, }, },
+        { 30, 50, S_TO_TICK(30), 2, { { 1, 20, MS_TO_TICK(500) }, { 0, 200, MS_TO_TICK(50) }, }, },
     },
     [LED_EVENT_LAYER] = {
         { 1, 20, 0, 1, { { 2, 20, 0 }, }, },
@@ -117,9 +118,13 @@ static void run_widget_cmd(const led_event_type_t ev, const uint8_t cmd_ind) {
         const uint8_t period = active_widget->period;
         if (period > 0) {
             LOG_INF("resched %u", TICK_TO_MS(period));
-            k_timer_start(&loop_timers[ev], K_NO_WAIT, K_MSEC(TICK_TO_MS(period)));
+            if (!loop_timer_started[ev]) {
+                k_timer_start(&loop_timers[ev], K_NO_WAIT, K_MSEC(TICK_TO_MS(period)));
+                loop_timer_started[ev] = true;
+            }
         } else {
             k_timer_stop(&loop_timers[ev]);
+            loop_timer_started[ev] = false;
         }
     }
     if (led_no < 0xFF) {
@@ -216,6 +221,22 @@ static void loop_timer_handler(struct k_timer *timer) {
     led_widget_schedule(ev, last_widgets_ind[ev]);
 }
 
+#define widget_handler(TYPE, EV, EV_VAR, MEMBER, CMP, MSG) \
+    const struct TYPE *EV_VAR = as_##TYPE(EV_VAR); \
+    if (EV_VAR) { \
+        const uint8_t match = EV_VAR->MEMBER; \
+        for (uint8_t i = 0; i < ARRAY_SIZE(widgets[LED_EVENT_BATTERY]); i ++) { \
+            LOG_WRN(MSG, match); \
+            if (match CMP widgets[EV][i].arg) { \
+                led_widget_schedule(EV, i); \
+                return ZMK_EV_EVENT_BUBBLE; \
+            } \
+        } \
+        active_widgets_ind[EV] = -1; \
+        k_delayed_work_submit(&led_widget_work, K_NO_WAIT); \
+        return ZMK_EV_EVENT_BUBBLE; \
+    }
+
 static int led_widgets_event_listener(const zmk_event_t *ev) {
     const struct zmk_battery_state_changed *bat_ev = as_zmk_battery_state_changed(ev);
     if (bat_ev) {
@@ -227,6 +248,7 @@ static int led_widgets_event_listener(const zmk_event_t *ev) {
                 return ZMK_EV_EVENT_BUBBLE;
             }
         }
+        active_widgets_ind[LED_EVENT_BATTERY] = -1;
         k_delayed_work_submit(&led_widget_work, K_NO_WAIT);
         return ZMK_EV_EVENT_BUBBLE;
     }
@@ -257,6 +279,7 @@ static int led_widgets_event_listener(const zmk_event_t *ev) {
                 return ZMK_EV_EVENT_BUBBLE;
             }
         }
+        active_widgets_ind[LED_EVENT_PROFILE] = -1;
         k_delayed_work_submit(&led_widget_work, K_NO_WAIT);
         return ZMK_EV_EVENT_BUBBLE;
     }
@@ -272,6 +295,7 @@ static int led_widgets_event_listener(const zmk_event_t *ev) {
                 return ZMK_EV_EVENT_BUBBLE;
             }
         }
+        active_widgets_ind[LED_EVENT_LAYER] = -1;
         k_delayed_work_submit(&led_widget_work, K_NO_WAIT);
         return ZMK_EV_EVENT_BUBBLE;
     }
@@ -286,6 +310,7 @@ static int led_widgets_event_listener(const zmk_event_t *ev) {
                 return ZMK_EV_EVENT_BUBBLE;
             }
         }
+        active_widgets_ind[LED_EVENT_OUTPUT] = -1;
         k_delayed_work_submit(&led_widget_work, K_NO_WAIT);
         return ZMK_EV_EVENT_BUBBLE;
     }
