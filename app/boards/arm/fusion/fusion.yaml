@@ -1,5 +1,5 @@
-identifier: fusion_h
-name: fusion_h
+identifier: fusion
+name: fusion
 type: mcu
 arch: arm
 toolchain:

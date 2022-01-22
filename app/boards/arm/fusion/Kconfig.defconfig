@@ -1,13 +1,13 @@
 # Copyright (c) 2020 Pete Johanson
 # SPDX-License-Identifier: MIT
 
-if BOARD_FUSION_H
+if BOARD_FUSION
 
 config BOARD
-	default "Fusion H"
+	default "Fusion"
 
 config ZMK_KEYBOARD_NAME
-	default "Fusion H"
+	default "Fusion"
 
 if USB
 
@@ -63,4 +63,4 @@ endif
 
 source "/home/steven/gitproj/zmk/app/steno/Kconfig"
 
-endif # BOARD_FUSION_H
+endif # BOARD_FUSION
