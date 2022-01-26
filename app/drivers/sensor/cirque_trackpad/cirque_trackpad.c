@@ -87,6 +87,7 @@ static int pinnacle_channel_get(const struct device *dev, enum sensor_channel ch
     switch (chan) {
     case SENSOR_CHAN_POS_DX: val->val1 = data->dx; break;
     case SENSOR_CHAN_POS_DY: val->val1 = data->dy; break;
+    case SENSOR_CHAN_POS_DZ: val->val1 = data->wheel; break;
     case SENSOR_CHAN_PRESS: val->val1 = data->btn; break;
     default: return -ENOTSUP;
     }
@@ -94,7 +95,7 @@ static int pinnacle_channel_get(const struct device *dev, enum sensor_channel ch
 }
 
 static int pinnacle_sample_fetch(const struct device *dev, enum sensor_channel chan) {
-    uint8_t packet[3];
+    uint8_t packet[4];
     int res = pinnacle_seq_read(dev, PINNACLE_2_2_PACKET0, packet, 3);
     if (res < 0) {
         LOG_ERR("res: %d", res);
@@ -104,6 +105,7 @@ static int pinnacle_sample_fetch(const struct device *dev, enum sensor_channel c
     data->btn = packet[0] & PINNACLE_PACKET0_BTN_PRIM;
     data->dx = (int16_t) (int8_t) packet[1];
     data->dy = (int16_t) (int8_t) packet[2];
+    data->wheel = packet[3];
     return 0;
 }
 
