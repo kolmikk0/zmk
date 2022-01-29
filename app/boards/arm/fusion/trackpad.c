@@ -15,7 +15,7 @@ static void handle_trackpad(const struct device *dev, struct sensor_trigger *tri
         LOG_ERR("fetch: %d", ret);
         return;
     }
-    struct sensor_value dx, dy, wheel, btn;
+    struct sensor_value dx, dy, btn;
     ret = sensor_channel_get(dev, SENSOR_CHAN_POS_DX, &dx);
     if (ret < 0) {
         LOG_ERR("get dx: %d", ret);
@@ -26,11 +26,6 @@ static void handle_trackpad(const struct device *dev, struct sensor_trigger *tri
         LOG_ERR("get dy: %d", ret);
         return;
     }
-    ret = sensor_channel_get(dev, SENSOR_CHAN_POS_DZ, &wheel);
-    if (ret < 0) {
-        LOG_ERR("get wheel: %d", ret);
-        return;
-    }
     ret = sensor_channel_get(dev, SENSOR_CHAN_PRESS, &btn);
     if (ret < 0) {
         LOG_ERR("get btn: %d", ret);
@@ -39,7 +34,6 @@ static void handle_trackpad(const struct device *dev, struct sensor_trigger *tri
     zmk_hid_mouse_movement_set(0, 0);
     zmk_hid_mouse_scroll_set(0, 0);
     zmk_hid_mouse_movement_update(dx.val1, dy.val1);
-    zmk_hid_mouse_scroll_update(wheel.val1, 0);
     if (!last_pressed && btn.val1) {
         zmk_hid_mouse_buttons_press(1);
     } else if (last_pressed && !btn.val1) {
@@ -54,6 +48,7 @@ static int trackpad_init() {
 		.type = SENSOR_TRIG_DATA_READY,
 		.chan = SENSOR_CHAN_ALL,
 	};
+    printk("trackpad");
 	if (sensor_trigger_set(trackpad, &trigger, handle_trackpad) < 0) {
         LOG_ERR("can't set trigger");
 		return -EIO;
