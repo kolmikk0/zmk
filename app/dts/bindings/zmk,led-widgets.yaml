@@ -1,0 +1,29 @@
+# Copyright (c) 2022, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: LED widget config
+
+compatible: "zmk,led-widgets"
+
+child-binding:
+  description: "A LED widget component"
+  child-binding:
+    description: "A single LED widget"
+    properties:
+      arg:
+        type: int
+        default: 0
+      priority:
+        type: int
+        required: true
+      period-ms:
+        type: int
+        default: 0
+    child-binding:
+      description: "A LED action"
+      properties:
+        len-ms:
+          type: int
+          default: 0
+        brightness:
+          type: array
