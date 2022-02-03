@@ -52,8 +52,8 @@ typedef struct {
 } led_widget_t;
 
 struct led_pwm_config {
-	int num_leds;
-	const void *led;
+    int num_leds;
+    const void *led;
 };
 
 #define TICK_MS_RATIO 5
@@ -80,9 +80,9 @@ static const led_widget_t widgets[][4] = {
         { 0, 100, 0, 3, { { { 0, 0, 50 }, MS_TO_TICK(100) }, { NONE, MS_TO_TICK(100) }, { { 0, 0, 50 }, MS_TO_TICK(100) }, }, },
     },
     [LED_EVENT_BATTERY] = {
-        { 30, 50, S_TO_TICK(30), 2, { { { 0, 20, 0 }, MS_TO_TICK(500) }, { { 100, 0, 0 }, MS_TO_TICK(50) }, }, },
-        { 70, 50, S_TO_TICK(30), 2, { { { 0, 50, 0 }, MS_TO_TICK(50) }, { { 100, 0, 0 }, MS_TO_TICK(50) }, }, },
-        { 100, 50, S_TO_TICK(30), 1, { { { 0, 100, 0 }, MS_TO_TICK(50) }, }, },
+        { 30, 50, S_TO_TICK(120), 1, { { { 50, 10, 0 }, MS_TO_TICK(100) }, }, },
+        { 70, 50, S_TO_TICK(120), 1, { { { 20, 20, 0 }, MS_TO_TICK(50) }, }, },
+        { 100, 50, S_TO_TICK(120), 1, { { { 0, 30, 0 }, MS_TO_TICK(50) }, }, },
     },
     [LED_EVENT_LAYER] = {
         { 1, 20, 0, 1, { { { 0, 0, 20 }, 0 }, }, },

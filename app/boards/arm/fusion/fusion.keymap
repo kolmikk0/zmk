@@ -13,23 +13,23 @@
 / {
     behaviors {
         // My Modtap
-		mm: behavior_mod_tap {
-			compatible = "zmk,behavior-hold-tap";
-			label = "MOD_TAP";
-			#binding-cells = <2>;
-			flavor = "balanced";
-			tapping-term-ms = <150>;
-			bindings = <&kp>, <&kp>;
-		};
+        mm: behavior_mod_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MOD_TAP";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <150>;
+            bindings = <&kp>, <&kp>;
+        };
         // My Layertap
-		ml: behavior_layer_tap {
-			compatible = "zmk,behavior-hold-tap";
-			label = "LAYER_TAP";
-			#binding-cells = <2>;
-			flavor = "hold-preferred";
-			tapping-term-ms = <150>;
-			bindings = <&mo>, <&kp>;
-		};
+        ml: behavior_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <150>;
+            bindings = <&mo>, <&kp>;
+        };
     };
     combos {
         compatible = "zmk,combos";
