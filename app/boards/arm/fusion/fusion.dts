@@ -19,6 +19,7 @@
         zmk,kscan = &matrix_kscan;
         zmk,matrix_transform = &transform;
         zmk,steno_flash = &spi_flash;
+        zmk,led-widgets-dev = &leds;
     };
 
     transform: transform {
