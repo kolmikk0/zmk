@@ -198,6 +198,9 @@ menuconfig ZMK_RGB_UNDERGLOW
     bool "RGB Adressable LED Underglow"
     select LED_STRIP
 
+config ZMK_LED_WIDGETS
+    bool "Display widgets on top of LEDs"
+
 if ZMK_RGB_UNDERGLOW
 
 # This default value cuts down on tons of excess .conf files, if you're using GPIO, manually disable this
