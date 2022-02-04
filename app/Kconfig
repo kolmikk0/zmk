@@ -257,6 +257,9 @@ menuconfig ZMK_RGB_UNDERGLOW
     select LED_STRIP
     select ZMK_LOW_PRIORITY_WORK_QUEUE
 
+config ZMK_LED_WIDGETS
+    bool "Display widgets on top of LEDs"
+
 if ZMK_RGB_UNDERGLOW
 
 # This default value cuts down on tons of excess .conf files, if you're using GPIO, manually disable this
