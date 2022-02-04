@@ -76,7 +76,7 @@
 #define RAISE 2
 #define GAME  3
 #define STENO 4
-/* #define LOCK  5 */
+#define LOCK  5
 
     keymap0: keymap {
         compatible = "zmk,keymap";
@@ -86,7 +86,7 @@
 &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp N         &kp K        &kp L         &kp B       &none
 &kp Z        &kp X       &kp C        &kp V         &none         &none         &kp M         &kp COMMA    &kp DOT       &kp J
                          &mm LGUI DEL &mm LCTRL TAB &ml RAISE ESC &ml LOWER RET &mm LSHFT SPC &mm LALT BSPC
-/* &mo LOCK */
+&mo LOCK
             >;
         };
         lower {
@@ -95,7 +95,7 @@
 &kp N1       &kp N2      &kp N3       &kp N4        &kp N5        &kp N6        &kp N7        &kp N8       &kp N9        &kp N0      &none
 &kp F1       &kp F2      &kp F3       &kp F4        &kp F5        &kp F6        &kp F7        &kp F8       &kp F9        &kp F10
                          &trans       &trans        &trans        &trans        &trans        &trans
-/* &trans */
+&trans
             >;
         };
 
@@ -105,7 +105,7 @@
 &out OUT_BLE &tog STENO  &bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &kp LEFT      &kp DOWN      &kp UP       &kp RIGHT     &none       &none
 &out OUT_USB &kp K_PREV  &kp K_PP     &kp K_NEXT    &bt BT_CLR    &kp LC(LEFT)  &kp LC(DOWN)  &kp LC(UP)   &kp LC(RIGHT) &none
                          &trans       &trans        &trans        &trans        &trans        &trans
-/* &trans */
+&trans
             >;
         };
 
@@ -115,7 +115,7 @@
 &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp J         &kp K        &kp L         &kp SEMI    &tog GAME
 &kp Z        &kp X       &kp C        &kp V         &kp B         &kp N         &kp M         &kp COMMA    &kp DOT       &kp FSLH
                          &kp LALT     &kp LCTRL     &kp ESC       &trans        &trans        &trans
-/* &trans */
+&trans
             >;
         };
 
@@ -125,7 +125,7 @@
 &stn STN_S_  &stn STN_K_ &stn STN_W_  &stn STN_R_   &stn STN_STAR &stn STN_STAR &stn STN__R   &stn STN__B  &stn STN__G   &stn STN__S &stn STN__Z
 &none        &none       &none        &none         &none         &none         &none         &none        &none         &none
                          &tog STENO   &stn STN_A    &stn STN_O    &stn STN_E    &stn STN_U    &stn STN_NUM
-/* &trans */
+&trans
             >;
         };
 
@@ -135,7 +135,7 @@
 &none        &none       &none        &none         &none         &none         &none         &none        &none         &none       &none
 &none        &none       &none        &none         &none         &none         &none         &none        &none         &none
                          &none        &none         &none         &none         &none         &none
-/* &trans */
+&trans
             >;
         };
     };
