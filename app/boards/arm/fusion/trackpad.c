@@ -3,6 +3,8 @@
 
 #include <zmk/hid.h>
 #include <zmk/endpoints.h>
+#include <zmk/keymap.h>
+#include <dt-bindings/zmk/mouse.h>
 
 LOG_MODULE_REGISTER(trackpad, CONFIG_SENSOR_LOG_LEVEL);
 
@@ -33,11 +35,19 @@ static void handle_trackpad(const struct device *dev, struct sensor_trigger *tri
     }
     zmk_hid_mouse_movement_set(0, 0);
     zmk_hid_mouse_scroll_set(0, 0);
-    zmk_hid_mouse_movement_update(dx.val1, dy.val1);
+    const uint8_t layer = zmk_keymap_highest_layer_active();
+    uint8_t button;
+    if (layer == 1) {   // lower
+        zmk_hid_mouse_scroll_update(dx.val1, dy.val1);
+        button = RCLK;
+    } else {
+        zmk_hid_mouse_movement_update(dx.val1, dy.val1);
+        button = LCLK;
+    }
     if (!last_pressed && btn.val1) {
-        zmk_hid_mouse_buttons_press(1);
+        zmk_hid_mouse_buttons_press(button);
     } else if (last_pressed && !btn.val1) {
-        zmk_hid_mouse_buttons_release(1);
+        zmk_hid_mouse_buttons_release(button);
     }
     zmk_endpoints_send_mouse_report();
     last_pressed = btn.val1;
