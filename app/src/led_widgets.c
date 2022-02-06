@@ -46,7 +46,7 @@ static void run_widget_cmd(const led_event_type_t ev, const uint8_t cmd_ind) {
     const led_cmd_t *cmd = &active_widget->commands[cmd_ind];
     if (cmd_ind == 0) {
         LOG_DBG("run %u", ev);
-        const uint16_t period = active_widget->period;
+        const uint32_t period = active_widget->period;
         if (period > 0) {
             LOG_DBG("resched %u", period);
             if (!loop_timer_started[ev]) {
