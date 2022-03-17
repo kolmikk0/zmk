@@ -42,7 +42,7 @@ static void handle_trackpad(const struct device *dev, const struct sensor_trigge
     uint8_t button;
     static uint8_t last_button = 0;
     static int8_t scroll_ver_rem = 0, scroll_hor_rem = 0;
-    if (layer == 1) {   // lower
+    if (layer == 2) {   // lower
         const int16_t total_hor = dx.val1 + scroll_hor_rem, total_ver = -(dy.val1 + scroll_ver_rem);
         scroll_hor_rem = total_hor % SCROLL_DIV_FACTOR;
         scroll_ver_rem = total_ver % SCROLL_DIV_FACTOR;

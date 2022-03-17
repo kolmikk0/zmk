@@ -35,7 +35,7 @@
         compatible = "zmk,combos";
 #define CONCAT2(x, y) x ## y
 #define CONCAT(x, y) CONCAT2(x, y)
-#define COMBO(pos, k) CONCAT(combo, __COUNTER__) { key-positions = <pos>; bindings = <&kp k>; layers = <0 1 2 3>; timeout-ms = <60>; };
+#define COMBO(pos, k) CONCAT(combo, __COUNTER__) { key-positions = <pos>; bindings = <&kp k>; layers = <0 1 2 3 4>; timeout-ms = <60>; };
         COMBO(0 1, PERCENT)
         COMBO(1 2, BSLH)
         COMBO(2 3, LBKT)
@@ -72,11 +72,12 @@
         COMBO(19 30, GT)
     };
 #define BASE  0
-#define LOWER 1
-#define RAISE 2
-#define GAME  3
-#define STENO 4
-#define LOCK  5
+#define COLA  1
+#define LOWER 2
+#define RAISE 3
+#define GAME  4
+#define STENO 5
+#define LOCK  6
 
     keymap0: keymap {
         compatible = "zmk,keymap";
@@ -87,6 +88,14 @@
 &kp Z        &kp X       &kp C        &kp V         &none         &none         &kp M         &kp COMMA    &kp DOT       &kp J
                          &mm LGUI DEL &mm LCTRL TAB &ml RAISE ESC &ml LOWER RET &mm LSHFT SPC &mm LALT BSPC
 &mo LOCK
+            >;
+        };
+        colemak {
+            bindings = <
+&kp Q        &kp W       &kp L        &kp D         &kp K         &kp J         &kp H         &kp U        &kp Y         &kp V       &none
+&kp A        &kp R       &kp S        &kp T         &kp G         &kp F         &kp N         &kp E        &kp I         &kp O       &none
+&kp Z        &kp B       &kp C        &kp P         &none         &none         &kp M         &kp COMMA    &kp DOT       &kp X
+                         &mm LGUI DEL &mm LCTRL TAB &ml RAISE ESC &ml LOWER RET &mm LSHFT SPC &mm LALT BSPC
             >;
         };
         lower {
@@ -101,8 +110,8 @@
 
         raise {
             bindings = <
-&kp C_BRI_DN &kp C_MUTE  &kp C_VOL_DN &kp C_VOL_UP  &kp C_BRI_UP  &kp HOME      &kp PG_DN     &kp PG_UP    &kp END       &kp PRSC    &none
-&out OUT_BLE &tog STENO  &bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &kp LEFT      &kp DOWN      &kp UP       &kp RIGHT     &none       &none
+&kp C_BRI_DN &kp C_MUTE  &kp C_VOL_DN &kp C_VOL_UP  &kp C_BRI_UP  &kp HOME      &kp PG_DN     &kp PG_UP    &kp END       &kp PRSC    &tog COLA
+&out OUT_BLE &tog STENO  &bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &kp LEFT      &kp DOWN      &kp UP       &kp RIGHT     &none       &tog GAME
 &out OUT_USB &kp K_PREV  &kp K_PP     &kp K_NEXT    &bt BT_CLR    &kp LC(LEFT)  &kp LC(DOWN)  &kp LC(UP)   &kp LC(RIGHT) &none
                          &trans       &trans        &trans        &trans        &trans        &trans
 &trans
