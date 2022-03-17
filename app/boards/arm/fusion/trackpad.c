@@ -12,7 +12,7 @@ LOG_MODULE_REGISTER(trackpad, CONFIG_SENSOR_LOG_LEVEL);
 
 const struct device *trackpad = DEVICE_DT_GET(DT_INST(0, cirque_pinnacle));
 
-static void handle_trackpad(const struct device *dev, struct sensor_trigger *trig) {
+static void handle_trackpad(const struct device *dev, const struct sensor_trigger *trig) {
     static uint8_t last_pressed = 0;
     int ret = sensor_sample_fetch(dev);
     if (ret < 0) {

@@ -68,7 +68,7 @@ static void run_widget_cmd(const led_event_type_t ev, const uint8_t cmd_ind) {
     }
     if (cmd->timeout > 0) {
         LOG_DBG("wait %u", cmd->timeout);
-        k_delayed_work_submit(&led_widget_work, K_MSEC(cmd->timeout));
+        k_work_delayable_submit(&led_widget_work, K_MSEC(cmd->timeout));
     }
     active_widget_type = ev;
     if (cmd_len == cmd_ind + 1) {
@@ -85,7 +85,7 @@ static void led_widget_pause() {
     LOG_DBG("-> pause");
     led_off_all();
     state = LED_STATE_PAUSE;
-    k_delayed_work_submit(&led_widget_work, K_MSEC(PAUSE_TIMEOUT_MS));
+    k_work_delayable_submit(&led_widget_work, K_MSEC(PAUSE_TIMEOUT_MS));
 }
 
 static void led_widget_work_cb(struct k_work *_work) {
@@ -165,7 +165,7 @@ static void loop_timer_handler(struct k_timer *timer) {
         } \
         LOG_DBG("not found"); \
         active_widgets_ind[LED_EVENT_##EV] = -1; \
-        k_delayed_work_submit(&led_widget_work, K_NO_WAIT); \
+        k_work_schedule(&led_widget_work, K_NO_WAIT); \
         return ZMK_EV_EVENT_BUBBLE; \
     }
 
