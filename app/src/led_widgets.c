@@ -13,7 +13,7 @@
 LOG_MODULE_REGISTER(led_widgets, 4);
 
 static const struct device *leds = DEVICE_DT_GET(DT_CHOSEN(zmk_led_widgets_dev));
-extern const led_widget_t led_widgets[][4];
+extern const led_widget_t led_widgets[LED_EVENT_SIZE][CONFIG_ZMK_LED_WIDGETS_MAX_WIDGET_NUM];
 
 #define PAUSE_TIMEOUT_MS 500
 #define PROFILE_COUNT (CONFIG_BT_MAX_PAIRED - 1)
@@ -159,9 +159,11 @@ static void loop_timer_handler(struct k_timer *timer) {
         for (uint8_t i = 0; i < ARRAY_SIZE(led_widgets[LED_EVENT_##EV]); i ++) { \
             if (match CMP led_widgets[LED_EVENT_##EV][i].arg) { \
                 led_widget_schedule(LED_EVENT_##EV, i); \
+                LOG_DBG("found %u", i); \
                 return ZMK_EV_EVENT_BUBBLE; \
             } \
         } \
+        LOG_DBG("not found"); \
         active_widgets_ind[LED_EVENT_##EV] = -1; \
         k_delayed_work_submit(&led_widget_work, K_NO_WAIT); \
         return ZMK_EV_EVENT_BUBBLE; \
