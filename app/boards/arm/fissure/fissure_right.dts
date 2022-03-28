@@ -20,6 +20,7 @@
 		zmk,matrix_transform = &transform;
         zmk,steno-flash = &steno_flash;
         zmk,led-widgets-dev = &leds;
+		zephyr,console = &cdc_acm_uart;
     };
 
 #define K(n) RC(0,n)
@@ -117,6 +118,10 @@ K(26) K(27) K(28) K(29) K(30) K(31)  K(11) K(10) K(9)  K(8)  K(7)  K(6)
 
 &usbd {
     status = "okay";
+	cdc_acm_uart: cdc_acm_uart {
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_0";
+	};
 };
 
 
