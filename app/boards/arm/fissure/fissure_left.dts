@@ -1,4 +1,4 @@
-#include "fissure.dts"
+#include "fissure_right.dts"
 
 &transform {
     col-offset = <20>;
