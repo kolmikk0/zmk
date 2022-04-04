@@ -2,6 +2,11 @@
 #include <zmk/endpoints_types.h>
 
 const led_widget_t led_widgets[LED_EVENT_SIZE][CONFIG_ZMK_LED_WIDGETS_MAX_WIDGET_NUM] = {
+#ifdef CONFIG_ZMK_SPLIT
+    [LED_EVENT_BATTERY] = {
+        WIDGET(7, priority = 50, period = 60000, cmd_len = 1, CMD(1000, 10)),
+    },
+#else
     [LED_EVENT_BOOT] = {
         WIDGET(0, priority = 100, period = 0, cmd_len = 3, CMD(100, 0, 0, 50), WAIT(100), CMD(100, 20, 0, 20)),
     },
@@ -26,4 +31,5 @@ const led_widget_t led_widgets[LED_EVENT_SIZE][CONFIG_ZMK_LED_WIDGETS_MAX_WIDGET
         WIDGET(1, priority = 90, period = 0, cmd_len = 3, CMD(50, 0, 0, 50), WAIT(150), CMD(100, 0, 100, 0)),
         WIDGET(2, priority = 90, period = 0, cmd_len = 3, CMD(50, 0, 0, 50), WAIT(150), CMD(100, 0, 0, 100)),
     },
+#endif
 };
