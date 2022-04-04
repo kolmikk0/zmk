@@ -1,5 +1,20 @@
-#include "fissure_right.dts"
+#include "fissure.dts"
 
 &transform {
     col-offset = <20>;
+};
+
+/ {
+    chosen {
+        zmk,led-widgets-dev = &leds;
+    };
+
+    leds: leds {
+        compatible = "pwm-leds";
+        label = "leds";
+        blue_led: led {
+            pwms = <&pwm0 36>;
+            label = "Blue LED";
+        };
+    };
 };
