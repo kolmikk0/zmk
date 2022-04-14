@@ -171,7 +171,7 @@ static void loop_timer_handler(struct k_timer *timer) {
 
 static int led_widgets_event_listener(const zmk_event_t *ev) {
     widget_handler(zmk_battery_state_changed, BATTERY, state_of_charge,, <, "bat level %u");
-#if !defined(CONFIG_ZMK_SPLIT) || defined(CONFIG_ZNK_SPLIT_BLE_ROLE_CENTRAL)
+#if !defined(CONFIG_ZMK_SPLIT) || defined(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
 #ifdef CONFIG_ZMK_BLE
     widget_handler(zmk_ble_active_profile_changed, PROFILE, index,, ==, "ble profile %u");
 #endif
