@@ -16,7 +16,8 @@ const led_widget_t led_widgets[LED_EVENT_SIZE][CONFIG_ZMK_LED_WIDGETS_MAX_WIDGET
         WIDGET(2, priority = 20, period = 0, cmd_len = 1, CMD(0, 0, 0, 20)),
         WIDGET(3, priority = 20, period = 0, cmd_len = 1, CMD(0, 0, 20, 0)),
         WIDGET(4, priority = 20, period = 0, cmd_len = 1, CMD(0, 10, 37, 34)),
-        WIDGET(5, priority = 20, period = 0, cmd_len = 1, CMD(0, 50, 15, 24)),
+        WIDGET(5, priority = 20, period = 0, cmd_len = 1, CMD(0, 50, 0, 0)),
+        WIDGET(6, priority = 20, period = 0, cmd_len = 1, CMD(0, 50, 15, 24)),
     },
     [LED_EVENT_OUTPUT] = {
         WIDGET(ZMK_ENDPOINT_BLE, priority = 100, period = 0, cmd_len = 1, CMD(200, 0, 0, 100)),
