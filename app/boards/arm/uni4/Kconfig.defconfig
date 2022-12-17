@@ -1,0 +1,12 @@
+# Copyright (c) 2021 Yonatan Schachter
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_UNI4
+
+config BOARD
+	default "uni4"
+
+config RP2_FLASH_GENERIC_03H
+	default y
+
+endif # BOARD_UNI4
