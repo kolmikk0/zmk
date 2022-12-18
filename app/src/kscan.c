@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <zephyr.h>
-#include <device.h>
-#include <bluetooth/addr.h>
-#include <drivers/kscan.h>
-#include <logging/log.h>
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/bluetooth/addr.h>
+#include <zephyr/drivers/kscan.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -58,8 +58,7 @@ void zmk_kscan_process_msgq(struct k_work *item) {
     }
 }
 
-int zmk_kscan_init(char *name) {
-    const struct device *dev = device_get_binding(name);
+int zmk_kscan_init(const struct device *dev) {
     if (dev == NULL) {
         LOG_ERR("Failed to get the KSCAN device");
         return -EINVAL;

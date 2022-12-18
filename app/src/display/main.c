@@ -4,24 +4,24 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <kernel.h>
-#include <init.h>
-#include <device.h>
-#include <devicetree.h>
+#include <zephyr/kernel.h>
+#include <zephyr/init.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#include <drivers/display.h>
+#include <zephyr/drivers/display.h>
 #include <lvgl.h>
+
+#include "theme.h"
 
 #include <zmk/event_manager.h>
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/display/status_screen.h>
 
-#define ZMK_DISPLAY_NAME CONFIG_LVGL_DISPLAY_DEV_NAME
-
-static const struct device *display;
+static const struct device *display = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
 static bool initialized = false;
 
 static lv_obj_t *screen;
@@ -50,10 +50,7 @@ struct k_work_q *zmk_display_work_q() {
 #endif
 }
 
-void display_timer_cb() {
-    lv_tick_inc(TICK_MS);
-    k_work_submit_to_queue(zmk_display_work_q(), &display_tick_work);
-}
+void display_timer_cb() { k_work_submit_to_queue(zmk_display_work_q(), &display_tick_work); }
 
 void blank_display_cb(struct k_work *work) { display_blanking_on(display); }
 
@@ -92,8 +89,7 @@ int zmk_display_is_initialized() { return initialized; }
 void initialize_display(struct k_work *work) {
     LOG_DBG("");
 
-    display = device_get_binding(ZMK_DISPLAY_NAME);
-    if (display == NULL) {
+    if (!device_is_ready(display)) {
         LOG_ERR("Failed to find display device");
         return;
     }
@@ -108,6 +104,7 @@ void initialize_display(struct k_work *work) {
     }
 
     lv_scr_load(screen);
+    zmk_display_theme_init(screen);
 
     start_display_updates();
 }
