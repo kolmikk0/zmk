@@ -38,7 +38,7 @@
             bindings = <
 &kp N1 &kp Q        &kp W       &kp E        &kp R         &kp T         &kp Y         &kp U         &kp I        &kp O         &kp P       &kp N3
 &kp N2 &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp N         &kp K        &kp L         &kp B       &kp N4
-                         &mm LGUI DEL &mm LCTRL TAB &ml RAISE ESC &ml LOWER RET &mm LSHFT SPC &mm LALT BSPC
+                         &mm LGUI DEL &mm LCTRL TAB &ml 0 ESC &ml 0 RET &mm LSHFT SPACE &mm LALT BSPC
             >;
         };
     };

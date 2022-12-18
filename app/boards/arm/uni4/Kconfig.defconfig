@@ -9,4 +9,6 @@ config BOARD
 config RP2_FLASH_GENERIC_03H
 	default y
 
+source "$srctree/../app/steno/Kconfig"
+
 endif # BOARD_UNI4

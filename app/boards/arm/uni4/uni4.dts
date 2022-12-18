@@ -6,6 +6,7 @@
 
 /dts-v1/;
 
+#include <dt-bindings/zmk/matrix_transform.h>
 #include <rpi_pico/rp2040.dtsi>
 #include "uni4-pinctrl.dtsi"
 
