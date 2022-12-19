@@ -34,11 +34,18 @@
 
     keymap0: keymap {
         compatible = "zmk,keymap";
-        base {
+        /* base { */
+        /*     bindings = < */
+/* &kp N1 &kp Q        &kp W       &kp E        &kp R         &kp T         &kp Y         &kp U         &kp I        &kp O         &kp P       &kp N3 */
+/* &kp N2 &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp N         &kp K        &kp L         &kp B       &kp N4 */
+        /*                  &mm LGUI DEL &mm LCTRL TAB &ml 0 ESC &ml 0 RET &mm LSHFT SPACE &mm LALT BSPC */
+        /*     >; */
+        /* }; */
+        steno {
             bindings = <
-&kp N1 &kp Q        &kp W       &kp E        &kp R         &kp T         &kp Y         &kp U         &kp I        &kp O         &kp P       &kp N3
-&kp N2 &kp A        &kp S       &kp D        &kp F         &kp G         &kp H         &kp N         &kp K        &kp L         &kp B       &kp N4
-                         &mm LGUI DEL &mm LCTRL TAB &ml 0 ESC &ml 0 RET &mm LSHFT SPACE &mm LALT BSPC
+&stn STN_S_ &stn STN_S_  &stn STN_T_ &stn STN_P_  &stn STN_H_   &stn STN_STAR &stn STN_STAR &stn STN__F   &stn STN__P  &stn STN__L   &stn STN__T &stn STN__D
+&stn STN_S_ &stn STN_S_  &stn STN_K_ &stn STN_W_  &stn STN_R_   &stn STN_STAR &stn STN_STAR &stn STN__R   &stn STN__B  &stn STN__G   &stn STN__S &stn STN__Z
+                         &stn STN_NUM   &stn STN_A    &stn STN_O    &stn STN_E    &stn STN_U    &stn STN_NUM
             >;
         };
     };

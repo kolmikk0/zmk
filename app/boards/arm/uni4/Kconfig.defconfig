@@ -6,7 +6,7 @@ if BOARD_UNI4
 config BOARD
 	default "uni4"
 
-config RP2_FLASH_GENERIC_03H
+config RP2_FLASH_W25Q080
 	default y
 
 source "$srctree/../app/steno/Kconfig"
