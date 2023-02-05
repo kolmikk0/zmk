@@ -42,14 +42,14 @@ static void handle_trackpad(const struct device *dev, const struct sensor_trigge
     uint8_t button;
     static uint8_t last_button = 0;
     static int8_t scroll_ver_rem = 0, scroll_hor_rem = 0;
-    if (layer == 2) {   // lower
-        const int16_t total_hor = dx.val1 + scroll_hor_rem, total_ver = -(dy.val1 + scroll_ver_rem);
+    if (layer == 3) {   // raise
+        const int16_t total_hor = dx.val1 + scroll_hor_rem, total_ver = -dy.val1 + scroll_ver_rem;
         scroll_hor_rem = total_hor % SCROLL_DIV_FACTOR;
         scroll_ver_rem = total_ver % SCROLL_DIV_FACTOR;
         zmk_hid_mouse_scroll_update(total_hor / SCROLL_DIV_FACTOR, total_ver / SCROLL_DIV_FACTOR);
         button = RCLK;
     } else {
-        zmk_hid_mouse_movement_update(CLAMP(dx.val1, INT8_MIN, INT8_MAX), CLAMP(dy.val1, INT8_MIN, INT8_MAX));
+        zmk_hid_mouse_movement_update(CLAMP(-dx.val1, INT8_MIN, INT8_MAX), CLAMP(dy.val1, INT8_MIN, INT8_MAX));
         button = LCLK;
     }
     if (!last_pressed && btn.val1) {
