@@ -30,12 +30,12 @@
             bindings = <&mo>, <&kp>;
         };
     };
-    combos {
-        compatible = "zmk,combos";
-#define CONCAT2(x, y) x ## y
-#define CONCAT(x, y) CONCAT2(x, y)
-#define COMBO(pos, k) CONCAT(combo, __COUNTER__) { key-positions = <pos>; bindings = <&kp k>; layers = <0 1 2 3 4>; timeout-ms = <60>; };
-    };
+    /* combos { */
+    /*     compatible = "zmk,combos"; */
+/* #define CONCAT2(x, y) x ## y */
+/* #define CONCAT(x, y) CONCAT2(x, y) */
+/* #define COMBO(pos, k) CONCAT(combo, __COUNTER__) { key-positions = <pos>; bindings = <&kp k>; layers = <0 1 2 3 4>; timeout-ms = <60>; }; */
+    /* }; */
 #define BASE  0
 #define LOWER 1
 #define RAISE 2
@@ -44,10 +44,10 @@
         compatible = "zmk,keymap";
         base {
             bindings = <
-&kp Q  &kp W  &kp E  &kp R  &kp T
-&kp Y  &kp U  &kp I  &kp O  &kp P
-&kp A  &kp S  &kp D  &kp F  &kp G
-&kp H  &kp N  &kp K  &kp L  &kp B
+&kp Q  &kp W  &kp E  &kp R
+&kp Y  &kp U  &kp I  &kp O
+&kp A  &kp S  &kp D  &kp F
+&kp H  &kp N  &kp K  &kp L
 &kp N1 &kp N2 &kp N3 &kp N4 &kp N5
             >;
         };
