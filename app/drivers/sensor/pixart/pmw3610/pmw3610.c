@@ -644,9 +644,9 @@ static int pmw3610_async_init_configure(const struct device *dev)
 	}
 
   // cpi
-	if (!err) {
-    err = set_cpi(dev, CONFIG_PMW3610_CPI);
-  }
+	/* if (!err) { */
+    /* err = set_cpi(dev, CONFIG_PMW3610_CPI); */
+  /* } */
 
   // set performace register: run mode, vel_rate, poshi_rate, poslo_rate
 	if (!err) {
@@ -981,10 +981,10 @@ static int pmw3610_trigger_set(const struct device *dev,
 		return -ENOTSUP;
 	}
 
-	if (unlikely(!data->ready)) {
-		LOG_DBG("Device is not initialized yet");
-		return -EBUSY;
-	}
+	/* if (unlikely(!data->ready)) { */
+	/* 	LOG_DBG("Device is not initialized yet"); */
+	/* 	return -EBUSY; */
+	/* } */
 
   // spin lock is needed, so that the handler is not invoked before its pointer is assigned
   // a valid value
