@@ -14,3 +14,5 @@ properties:
   irq-gpios:
     type: phandle-array
     required: true
+  rst-gpios:
+    type: phandle-array
