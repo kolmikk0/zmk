@@ -44,7 +44,7 @@
         compatible = "zmk,keymap";
         base {
             bindings = <
-&kp Y  &kp U  &kp I  &kp O
+&kp U  &kp I  &kp O  &kp P
 &kp N  &kp K  &kp L  &kp B
 &kp M  &kp COMMA  &kp DOT  &kp J
 &kp N1 &kp N2 &kp N3 &kp N4 &kp N5

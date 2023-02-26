@@ -282,5 +282,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)
         spi-max-frequency = <1000000>;
         label = "pmw3610";
         irq-gpios = <&gpio0 8 GPIO_ACTIVE_LOW>;
+        rst-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
     };
 };
