@@ -75,8 +75,21 @@
 #define COLA  1
 #define LOWER 2
 #define RAISE 3
-#define GAME  4
-#define STENO 5
+#define ADJUST 4
+#define GAME  5
+#define STENO 6
+
+    macros {
+        #include "macros.dtsi"
+    };
+
+    adjust {
+        compatible = "zmk,conditional-layers";
+        tri_layer {
+            if-layers = <LOWER RAISE>;
+            then-layer = <ADJUST>;
+        };
+    };
 
     keymap0: keymap {
         compatible = "zmk,keymap";
@@ -108,8 +121,17 @@
         raise {
             bindings = <
 &kp C_BRI_DN &kp C_MUTE  &kp C_VOL_DN &kp C_VOL_UP  &kp C_BRI_UP  &kp HOME      &kp PG_DN     &kp PG_UP    &kp END       &kp PRSC
-&out OUT_BLE &tog STENO  &bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &kp LEFT      &kp DOWN      &kp UP       &kp RIGHT     &none       &tog GAME
+&out OUT_BLE &tog STENO  &bt BT_SEL 0 &bt BT_SEL 1  &bt BT_SEL 2  &kp LEFT      &kp DOWN      &kp UP       &kp RIGHT     &none
 &out OUT_USB &kp K_PREV  &kp K_PP     &kp K_NEXT    &bt BT_CLR    &kp LC(LEFT)  &kp LC(DOWN)  &kp LC(UP)   &kp LC(RIGHT) &none
+                         &trans       &trans        &trans        &trans        &trans        &trans
+            >;
+        };
+
+        adjust {
+            bindings = <
+&none &none &school_email &none       &none &none &uiuc &none &personal_email &phone
+&none &steve &none         &first_name &none &none &name &none &last_name      &none
+&none &none &none         &none       &none &none &none &none &none           &none
                          &trans       &trans        &trans        &trans        &trans        &trans
             >;
         };
