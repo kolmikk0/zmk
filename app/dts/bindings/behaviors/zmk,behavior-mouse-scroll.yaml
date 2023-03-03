@@ -11,3 +11,10 @@ properties:
     type: int
   acceleration-exponent:
     type: int
+  "#sensor-binding-cells":
+    type: int
+    required: true
+    const: 1
+
+sensor-binding-cells:
+  - param1

@@ -177,6 +177,22 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)
             };
         };
     };
+
+    sensors {
+		status = "okay";
+        compatible = "zmk,keymap-sensors";
+        sensors = <&wheel>;
+    };
+
+
+	wheel: wheel {
+		compatible = "alps,ec11";
+		label = "wheel";
+		a-gpios = <&gpio0 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		b-gpios = <&gpio0 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		resolution = <1>;
+		status = "okay";
+	};
 };
 
 &pwm0 {

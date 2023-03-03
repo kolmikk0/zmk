@@ -6,6 +6,7 @@
 
 #include <sys/util.h>
 #include <bluetooth/bluetooth.h>
+#include <drivers/sensor.h>
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -75,7 +76,7 @@ static const char *zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN] = {
 #if ZMK_KEYMAP_HAS_SENSORS
 
 static struct zmk_behavior_binding zmk_sensor_keymap[ZMK_KEYMAP_LAYERS_LEN]
-                                                    [ZMK_KEYMAP_SENSORS_LEN] = {
+                                                    [2] = {
                                                         DT_INST_FOREACH_CHILD(0, SENSOR_LAYER)};
 
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
@@ -254,22 +255,30 @@ int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pr
 int zmk_keymap_sensor_triggered(uint8_t sensor_number, const struct device *sensor,
                                 int64_t timestamp) {
     for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= _zmk_keymap_layer_default; layer--) {
-        if (zmk_keymap_layer_active(layer) && zmk_sensor_keymap[layer] != NULL) {
-            struct zmk_behavior_binding *binding = &zmk_sensor_keymap[layer][sensor_number];
-            const struct device *behavior;
+        if (zmk_keymap_layer_active(layer)) {
             int ret;
 
+            struct sensor_value value;
+            ret = sensor_channel_get(sensor, SENSOR_CHAN_ROTATION, &value);
+            if (ret) {
+                LOG_WRN("Failed to ge sensor rotation value: %d", ret);
+                return ret;
+            }
+            struct zmk_behavior_binding *binding = &zmk_sensor_keymap[layer][value.val1 == 1 ? 0 : 1];
             LOG_DBG("layer: %d sensor_number: %d, binding name: %s", layer, sensor_number,
                     log_strdup(binding->behavior_dev));
 
-            behavior = device_get_binding(binding->behavior_dev);
+            struct zmk_behavior_binding_event event = { .layer = layer, .position = -1, .timestamp = k_uptime_get() };
+            const struct device *behavior = device_get_binding(binding->behavior_dev);
 
             if (!behavior) {
                 LOG_DBG("No behavior assigned to %d on layer %d", sensor_number, layer);
                 continue;
             }
 
-            ret = behavior_sensor_keymap_binding_triggered(binding, sensor, timestamp);
+            ret = invoke_locally(binding, event, true);
+            k_msleep(5);
+            ret = invoke_locally(binding, event, false);
 
             if (ret > 0) {
                 LOG_DBG("behavior processing to continue to next layer");
