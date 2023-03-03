@@ -624,11 +624,11 @@ static int pmw3610_async_init_check_ob1(const struct device *dev)
         return -EINVAL;
     }
 
-    /* err = check_product_id(dev); */
-    /* if (err) { */
-    /* 	LOG_ERR("Failed checking product id"); */
-    /* 	return err; */
-    /* } */
+    err = check_product_id(dev);
+    if (err) {
+    	LOG_ERR("Failed checking product id");
+    	return err;
+    }
 
     return 0;
 }
@@ -760,10 +760,11 @@ static void trigger_handler(struct k_work *work)
     // 2. the second lock period is used to resume the interrupt line
     // if data_ready_handler is non-NULL, otherwise keep it inactive
     key = k_spin_lock(&data->lock);
-    err = reg_write(dev, PMW3610_REG_MOTION, 0xff);
+    err = reg_write(dev, PMW3610_REG_MOTION, 0);
     if (err < 0) {
         LOG_ERR("clear motion %d", err);
     }
+
     k_busy_wait(4);
     if (data->data_ready_handler) {
         LOG_DBG("en int");

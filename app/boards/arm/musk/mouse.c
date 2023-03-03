@@ -44,7 +44,7 @@ static void handle_mouse(const struct device *dev, const struct sensor_trigger *
     /*     zmk_hid_mouse_scroll_update(total_hor / SCROLL_DIV_FACTOR, total_ver / SCROLL_DIV_FACTOR); */
     /*     button = RCLK; */
     /* } else { */
-        zmk_hid_mouse_movement_update(CLAMP(-dx.val1, INT8_MIN, INT8_MAX), CLAMP(-dy.val1, INT8_MIN, INT8_MAX));
+        zmk_hid_mouse_movement_update(CLAMP(dx.val1, INT8_MIN, INT8_MAX), CLAMP(dy.val1, INT8_MIN, INT8_MAX));
         /* button = LCLK; */
     /* } */
     /* if (!last_pressed && btn.val1) { */
