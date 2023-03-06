@@ -4,10 +4,10 @@
 if BOARD_MUSK
 
 config BOARD
-    default "Fusion"
+    default "Musk"
 
 config ZMK_KEYBOARD_NAME
-    default "Fusion"
+    default "Musk"
 
 if USB
 

@@ -8,6 +8,9 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/mouse.h>
+
+&mwh { status = "okay"; };
 
 / {
     behaviors {
@@ -29,6 +32,15 @@
             tapping-term-ms = <150>;
             bindings = <&mo>, <&kp>;
         };
+        qt: behavior_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "quick tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <150>;
+            quick-tap-ms = <250>;
+            bindings = <&mo>, <&kp>;
+        };
     };
     /* combos { */
     /*     compatible = "zmk,combos"; */
@@ -37,28 +49,29 @@
 /* #define COMBO(pos, k) CONCAT(combo, __COUNTER__) { key-positions = <pos>; bindings = <&kp k>; layers = <0 1 2 3 4>; timeout-ms = <60>; }; */
     /* }; */
 #define BASE  0
-#define LOWER 1
-#define RAISE 2
+#define MOUSE 1
+#define LOWER 2
+#define RAISE 3
 
     keymap0: keymap {
         compatible = "zmk,keymap";
         base {
             bindings = <
-&kp U  &kp I  &kp O  &kp P
-&kp N  &kp K  &kp L  &kp B
-&kp M  &kp COMMA  &kp DOT  &kp J
-&kp N1 &kp N2 &kp N3 &kp N4 &kp N5
+&kp U         &kp I         &kp O          &kp P
+&kp N         &kp K         &kp L          &kp B
+&kp M         &kp COMMA     &kp DOT        &kp J
+&ml LOWER RET &mm LSHFT SPC &qt MOUSE BSPC &none                 &none
             >;
-            sensor-bindings = <&mwh 100>, <&mwh (-100)>;
+            sensor-bindings = <&mwh SCROLL_VERT(-100)>, <&mwh SCROLL_VERT(100)>;
         };
-        base {
+        mouse {
             bindings = <
-&kp U  &kp I  &kp O  &kp P
-&kp N  &kp K  &kp L  &kp B
-&kp M  &kp COMMA  &kp DOT  &kp J
-&kp N1 &kp N2 &kp N3 &kp N4 &kp N5
+&kp PG_UP &kp K_FORWARD &kp HOME  &mwh SCROLL_VERT(20)
+&mkp LCLK &mkp MCLK     &mkp RCLK &none
+&kp PG_DN &kp K_BACK    &kp END   &mwh SCROLL_VERT(-20)
+&trans    &trans        &trans    &trans                 &trans
             >;
-            sensor-bindings = <&mwh 100>, <&mwh (-100)>;
+            sensor-bindings = <&mwh SCROLL_VERT(-100)>, <&mwh SCROLL_VERT(100)>;
         };
     };
 };

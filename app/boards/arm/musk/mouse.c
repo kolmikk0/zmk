@@ -4,11 +4,10 @@
 #include <zmk/hid.h>
 #include <zmk/endpoints.h>
 #include <zmk/keymap.h>
-#include <dt-bindings/zmk/mouse.h>
 
 #define SCROLL_DIV_FACTOR 5
 
-LOG_MODULE_REGISTER(mouse, CONFIG_SENSOR_LOG_LEVEL);
+LOG_MODULE_REGISTER(mouse, 3);
 
 const struct device *mouse = DEVICE_DT_GET(DT_INST(0, pixart_pmw3610));
 
@@ -31,8 +30,6 @@ static void handle_mouse(const struct device *dev, const struct sensor_trigger *
         return;
     }
     LOG_DBG("mouse %d %d", dx.val1, dy.val1);
-    zmk_hid_mouse_movement_set(0, 0);
-    zmk_hid_mouse_scroll_set(0, 0);
     /* const uint8_t layer = zmk_keymap_highest_layer_active(); */
     /* uint8_t button; */
     /* static uint8_t last_button = 0; */
@@ -44,7 +41,18 @@ static void handle_mouse(const struct device *dev, const struct sensor_trigger *
     /*     zmk_hid_mouse_scroll_update(total_hor / SCROLL_DIV_FACTOR, total_ver / SCROLL_DIV_FACTOR); */
     /*     button = RCLK; */
     /* } else { */
-        zmk_hid_mouse_movement_update(CLAMP(dx.val1, INT8_MIN, INT8_MAX), CLAMP(dy.val1, INT8_MIN, INT8_MAX));
+    /* static bool reached_zero = false; */
+    /* bool update = true; */
+    /* if (x == 0 && y == 0) { */
+    /*     if (reached_zero) { */
+    /*         update = false; */
+    /*     } else { */
+    /*         reached_zero = true; */
+    /*     } */
+    /* } */
+    /* if (update) { */
+        zmk_hid_mouse_movement_set(dx.val1, dy.val1);
+    /* } */
         /* button = LCLK; */
     /* } */
     /* if (!last_pressed && btn.val1) { */
@@ -62,7 +70,6 @@ static int mouse_init() {
         .type = SENSOR_TRIG_DATA_READY,
         .chan = SENSOR_CHAN_ALL,
     };
-    printk("mouse");
     int ret = sensor_trigger_set(mouse, &trigger, handle_mouse);
     if (ret < 0) {
         LOG_ERR("can't set trigger: %d", ret);
