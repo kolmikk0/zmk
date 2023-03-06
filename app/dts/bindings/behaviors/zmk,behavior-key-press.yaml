@@ -6,3 +6,11 @@ description: Key press/release behavior
 compatible: "zmk,behavior-key-press"
 
 include: one_param.yaml
+
+properties:
+  "#sensor-binding-cells":
+    type: int
+    const: 1
+
+sensor-binding-cells:
+  - param1

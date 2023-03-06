@@ -264,7 +264,11 @@ int zmk_keymap_sensor_triggered(uint8_t sensor_number, const struct device *sens
                 LOG_WRN("Failed to ge sensor rotation value: %d", ret);
                 return ret;
             }
-            struct zmk_behavior_binding *binding = &zmk_sensor_keymap[layer][value.val1 == 1 ? 0 : 1];
+            if (value.val1 == 0) {
+                continue;
+            }
+            const int ind = value.val1 == 1 ? 0 : 1;
+            struct zmk_behavior_binding *binding = &zmk_sensor_keymap[layer][ind];
             LOG_DBG("layer: %d sensor_number: %d, binding name: %s", layer, sensor_number,
                     log_strdup(binding->behavior_dev));
 

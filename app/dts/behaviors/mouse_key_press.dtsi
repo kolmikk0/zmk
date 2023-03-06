@@ -4,6 +4,7 @@
 			compatible = "zmk,behavior-mouse-key-press";
 			label = "MOUSE_KEY_PRESS";
 			#binding-cells = <1>;
+			#sensor-binding-cells = <1>;
 		};
 	};
 };
