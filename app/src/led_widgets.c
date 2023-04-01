@@ -192,6 +192,7 @@ static int led_widgets_init() {
 
 ZMK_LISTENER(led_widgets_event, led_widgets_event_listener);
 ZMK_SUBSCRIPTION(led_widgets_event, zmk_battery_state_changed);
+#if !defined(CONFIG_ZMK_SPLIT) || defined(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
 #if defined(CONFIG_USB)
 ZMK_SUBSCRIPTION(led_widgets_event, zmk_usb_conn_state_changed);
 #endif
@@ -200,5 +201,6 @@ ZMK_SUBSCRIPTION(led_widgets_event, zmk_ble_active_profile_changed);
 #endif
 ZMK_SUBSCRIPTION(led_widgets_event, zmk_layer_state_changed);
 ZMK_SUBSCRIPTION(led_widgets_event, zmk_endpoint_selection_changed);
+#endif
 
 SYS_INIT(led_widgets_init, APPLICATION, CONFIG_ZMK_KSCAN_INIT_PRIORITY);
