@@ -117,32 +117,18 @@ K(26) K(27) K(28) K(29) K(30) K(31)  K(11) K(10) K(9)  K(8)  K(7)  K(6)
         #address-cells = <1>;
         #size-cells = <1>;
 
-        sd_partition: partition@0 {
-            label = "mbr";
-            reg = <0x00000000 0x00001000>;
-        };
-        code_partition: partition@1000 {
+        code_partition: partition@0 {
             label = "code_partition";
-            reg = <0x00001000 0x000d3000>;
+            reg = <0x00000000 0x000e0000>;
         };
-
-        /*
-         * The flash starting at 0x000d4000 and ending at
-         * 0x000f3fff is reserved for use by the application.
-         */
 
         /*
          * Storage partition will be used by FCB/LittleFS/NVS
          * if enabled.
          */
-        storage_partition: partition@d4000 {
+        storage_partition: partition@e0000 {
             label = "storage";
-            reg = <0x000d4000 0x00020000>;
-        };
-
-        boot_partition: partition@f4000 {
-            label = "adafruit_boot";
-            reg = <0x000f4000 0x0000c000>;
+            reg = <0x000e0000 0x00020000>;
         };
     };
 };
