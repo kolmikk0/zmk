@@ -50,7 +50,8 @@ static struct k_work_delayable ext_power_save_work;
 
 int ext_power_save_state() {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    return k_work_reschedule(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    int ret = k_work_reschedule(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return MIN(ret, 0);
 #else
     return 0;
 #endif
@@ -175,10 +176,10 @@ static int ext_power_generic_init(const struct device *dev) {
 #ifdef CONFIG_PM_DEVICE
 static int ext_power_generic_pm_action(const struct device *dev, enum pm_device_action action) {
     switch (action) {
-    case PM_DEVICE_ACTION_TURN_ON:
+    case PM_DEVICE_ACTION_RESUME:
         ext_power_generic_enable(dev);
         return 0;
-    case PM_DEVICE_ACTION_TURN_OFF:
+    case PM_DEVICE_ACTION_SUSPEND:
         ext_power_generic_disable(dev);
         return 0;
     default:

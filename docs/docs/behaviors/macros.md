@@ -134,6 +134,12 @@ bindings
     ;
 ```
 
+### Behavior Queue Limit
+
+Macros use an internal queue to invoke each behavior in the bindings list when triggered, which has a size of 64 by default. Bindings in "press" and "release" modes correspond to one event in the queue, whereas "tap" mode bindings correspond to two (one for press and one for release). As a result, the effective number of actions processed might be less than 64 and this can cause problems for long macros.
+
+To prevent issues with longer macros, you can change the size of this queue via the `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE` setting in your configuration, [typically through your `.conf` file](../config/index.md). For example, `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512` would allow your macro to type about 256 characters.
+
 ## Common Patterns
 
 Below are some examples of how the macro behavior can be used for various useful functionality.
@@ -187,14 +193,14 @@ bindings
 
 ### Unicode Sequences
 
-Many operating systems allow a special sequence to input unicode characters, e.g. [Windows alt codes](https://support.microsoft.com/en-us/office/insert-ascii-or-unicode-latin-based-symbols-and-characters-d13f58d3-7bcb-44a7-a4d5-972ee12e50e0). You can use macros to insert there automatically, e.g.:
+Many operating systems allow a special sequence to input unicode characters, e.g. [Windows alt codes](https://support.microsoft.com/en-us/office/insert-ascii-or-unicode-latin-based-symbols-and-characters-d13f58d3-7bcb-44a7-a4d5-972ee12e50e0). You can use macros to automate inputting the sequences, e.g. below macro inserts `£` on Windows:
 
 ```
 wait-ms = <40>;
 tap-ms = <40>;
 bindings
     = <&macro_press   &kp LALT>
-    , <&macro_tap     &kp N0 &kp N1 &kp N6 &kp N3>
+    , <&macro_tap     &kp KP_N0 &kp KP_N1 &kp KP_N6 &kp KP_N3>
     , <&macro_release &kp LALT>
     ;
 ```

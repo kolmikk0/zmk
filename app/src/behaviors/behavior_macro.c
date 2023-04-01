@@ -174,12 +174,12 @@ static const struct behavior_driver_api behavior_macro_driver_api = {
 #define MACRO_INST(n)                                                                              \
     static struct behavior_macro_state behavior_macro_state_##n = {};                              \
     static struct behavior_macro_config behavior_macro_config_##n = {                              \
-        .default_wait_ms = DT_INST_PROP_OR(n, wait_ms, 100),                                       \
-        .default_tap_ms = DT_INST_PROP_OR(n, tap_ms, 100),                                         \
+        .default_wait_ms = DT_INST_PROP_OR(n, wait_ms, CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS),          \
+        .default_tap_ms = DT_INST_PROP_OR(n, tap_ms, CONFIG_ZMK_MACRO_DEFAULT_TAP_MS),             \
         .count = DT_INST_PROP_LEN(n, bindings),                                                    \
         .bindings = TRANSFORMED_BEHAVIORS(n)};                                                     \
-    DEVICE_DT_INST_DEFINE(n, behavior_macro_init, device_pm_control_nop,                           \
-                          &behavior_macro_state_##n, &behavior_macro_config_##n, APPLICATION,      \
+    DEVICE_DT_INST_DEFINE(n, behavior_macro_init, NULL, &behavior_macro_state_##n,                 \
+                          &behavior_macro_config_##n, APPLICATION,                                 \
                           CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_macro_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(MACRO_INST)

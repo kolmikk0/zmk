@@ -20,6 +20,8 @@ properties:
     default: -1
   quick_tap_ms: # deprecated
     type: int
+  global-quick-tap:
+    type: boolean
   flavor:
     type: string
     required: false
@@ -35,3 +37,5 @@ properties:
     type: array
     required: false
     default: []
+  hold-trigger-on-release:
+    type: boolean
