@@ -1,6 +1,6 @@
 #pragma once
 
-#include <devicetree.h>
+#include <zephyr/devicetree.h>
 #include <stdint.h>
 
 typedef enum {
