@@ -1,5 +1,5 @@
-#include <device.h>
-#include <drivers/led.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/led.h>
 #include <zmk/event_manager.h>
 #include <zmk/keymap.h>
 #include <zmk/events/layer_state_changed.h>
@@ -8,7 +8,7 @@
 #include <zmk/events/ble_active_profile_changed.h>
 #include <zmk/events/endpoint_selection_changed.h>
 #include <zmk/led_widgets.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_REGISTER(led_widgets, 4);
 
@@ -59,8 +59,8 @@ static void run_widget_cmd(const led_event_type_t ev, const uint8_t cmd_ind) {
         }
     }
 #define _FMT(_i, _j) " %u"
-#define _ARG(i, _j) ,cmd->brightness[i]
-    LOG_DBG("led" UTIL_LISTIFY(NUM_LEDS, _FMT) UTIL_LISTIFY(NUM_LEDS, _ARG));
+#define _ARG(i, _j) , cmd->brightness[i]
+    LOG_DBG("led" LISTIFY(NUM_LEDS, _FMT) LISTIFY(NUM_LEDS, _ARG));
 #undef _FMT
 #undef _ARG
     for (uint8_t i = 0; i < NUM_LEDS; i ++) {
