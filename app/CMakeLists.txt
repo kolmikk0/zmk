@@ -90,6 +90,10 @@ target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/backlight.c)
 target_sources(app PRIVATE src/workqueue.c)
 target_sources(app PRIVATE src/main.c)
 
+if (CONFIG_ZMK_EMBEDDED_STENO)
+    add_subdirectory(steno)
+endif()
+
 add_subdirectory(src/display/)
 
 zephyr_cc_option(-Wfatal-errors)
