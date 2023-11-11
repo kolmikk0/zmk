@@ -1,0 +1,59 @@
+#include "fissure.dtsi"
+#include "dt-bindings/zmk/is31fl3729_transform.h"
+#include "fissure_left-pinctrl.dtsi"
+
+/ {
+    chosen {
+    };
+};
+
+&i2c0 {
+    compatible = "nordic,nrf-twi";
+    status = "okay";
+    pinctrl-0 = <&i2c0_def>;
+    pinctrl-1 = <&i2c0_slp>;
+    pinctrl-names = "default", "sleep";
+	rgb: is31fl3729@34 {
+        compatible = "issi,is31fl3729";
+        status = "okay";
+        reg = <0x34>;
+        r-ext = <10>;
+        led-max-current = <1>;
+        sdb-gpios = <&gpio0 26 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+        chain-length = <60>;
+        scaling = <BGR_SCALING BGR_SCALING BGR_SCALING BGR_SCALING BGR_SCALING 0>;
+
+#define RGB_CS0 3, 2, 1
+#define RGB_CS1 6, 5, 4
+#define RGB_CS2 9, 8, 7
+#define RGB_CS3 15, 14, 13
+#define RGB_CS4 12, 11, 10
+		map = <
+PIX(4, 0) PIX(4, 1) PIX(4, 3) PIX(3, 3) PIX(2, 3) PIX(1, 3)
+PIX(3, 0) PIX(2, 0) PIX(4, 2) PIX(4, 4) PIX(2, 2) PIX(1, 2)
+          PIX(1, 0) PIX(3, 1) PIX(3, 2) PIX(2, 1) PIX(1, 1)
+                              PIX(3, 4) PIX(2, 4) PIX(1, 4)
+            >;
+    };
+};
+
+&spi0 {
+    compatible = "nordic,nrf-spim";
+    status = "okay";
+    pinctrl-0 = <&spi0_def>;
+    pinctrl-1 = <&spi0_slp>;
+    pinctrl-names = "default", "sleep";
+    cs-gpios = <&gpio0 22 GPIO_ACTIVE_LOW>;
+
+    steno_flash: nor-flash@0 {
+        reg = <0>;
+        compatible = "jedec,spi-nor";
+        status = "okay";
+        sck-frequency = <8000000>;
+        jedec-id = [20 ba 18];      // TODO
+        size = <0x8000000>;
+        has-dpd;
+        t-enter-dpd = <3000>;
+        t-exit-dpd = <30000>;
+    };
+};
