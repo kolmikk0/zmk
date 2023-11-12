@@ -20,7 +20,7 @@
         zmk,kscan = &kscan;
 		zmk,matrix_transform = &transform;
         zmk,steno-flash = &steno_flash;
-		//zephyr,console = &cdc_acm_uart;
+        zmk,battery = &vbat;
     };
 
 	transform: transform {
@@ -37,7 +37,6 @@ RC(1,0) RC(2,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)   RC(5,4) RC(5,3) RC(5,2) RC(5,1
 
     kscan: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "matrix_kscan";
         diode-direction = "row2col";
         row-gpios
             = <&gpio1 11 GPIO_ACTIVE_HIGH>
@@ -55,13 +54,51 @@ RC(1,0) RC(2,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)   RC(5,4) RC(5,3) RC(5,2) RC(5,1
     };
 
 
-    vbatt {
+    vbat: vbat {
         compatible = "zmk,battery-voltage-divider";
-        label = "BATTERY";
         io-channels = <&adc 3>;
         power-gpios = <&gpio1 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         output-ohms = <100000>;
         full-ohms = <(100000 + 100000)>;
+    };
+};
+
+&i2c0 {
+    compatible = "nordic,nrf-twi";
+    status = "okay";
+    pinctrl-0 = <&i2c0_def>;
+    pinctrl-1 = <&i2c0_slp>;
+    pinctrl-names = "default", "sleep";
+	rgb: is31fl3729@34 {
+        compatible = "issi,is31fl3729";
+        status = "okay";
+        reg = <0x34>;
+        r-ext = <10>;
+        led-max-current = <1>;
+        sw-setting = <5>;           // first 4 SW lines
+        pwm-frequency = <5>;        // 0.5kHz
+        sdb-gpios = <&gpio0 26 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+        chain-length = <60>;
+        scaling = <BGR_SCALING BGR_SCALING BGR_SCALING BGR_SCALING BGR_SCALING 0>;
+    };
+};
+
+&spi0 {
+    compatible = "nordic,nrf-spim";
+    status = "okay";
+    pinctrl-0 = <&spi0_def>;
+    pinctrl-1 = <&spi0_slp>;
+    pinctrl-names = "default", "sleep";
+
+    steno_flash: nor-flash@0 {
+        reg = <0>;
+        compatible = "jedec,spi-nor";
+        status = "okay";
+        spi-max-frequency = <8000000>;
+        size = <0x8000000>;
+        has-dpd;
+        t-enter-dpd = <3000>;
+        t-exit-dpd = <30000>;
     };
 };
 
