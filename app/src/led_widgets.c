@@ -6,7 +6,7 @@
 #include <zmk/events/usb_conn_state_changed.h>
 #include <zmk/events/battery_state_changed.h>
 #include <zmk/events/ble_active_profile_changed.h>
-#include <zmk/events/endpoint_selection_changed.h>
+#include <zmk/events/endpoint_changed.h>
 #include <zmk/led_widgets.h>
 #include <zephyr/logging/log.h>
 
@@ -176,7 +176,7 @@ static int led_widgets_event_listener(const zmk_event_t *ev) {
 #endif
     widget_handler(zmk_layer_state_changed, LAYER, , zmk_keymap_highest_layer_active(), ==,
                    "layer %u");
-    widget_handler(zmk_endpoint_selection_changed, OUTPUT, endpoint, , ==, "endpoint %u");
+    widget_handler(zmk_endpoint_changed, OUTPUT, endpoint, , ==, "endpoint %u");
     return ZMK_EV_EVENT_BUBBLE;
 }
 
@@ -198,6 +198,6 @@ ZMK_SUBSCRIPTION(led_widgets_event, zmk_usb_conn_state_changed);
 ZMK_SUBSCRIPTION(led_widgets_event, zmk_ble_active_profile_changed);
 #endif
 ZMK_SUBSCRIPTION(led_widgets_event, zmk_layer_state_changed);
-ZMK_SUBSCRIPTION(led_widgets_event, zmk_endpoint_selection_changed);
+ZMK_SUBSCRIPTION(led_widgets_event, zmk_endpoint_changed);
 
 SYS_INIT(led_widgets_init, APPLICATION, CONFIG_ZMK_KSCAN_INIT_PRIORITY);
