@@ -21,10 +21,26 @@ properties:
       - 0x06
       - 0x07
       - 0x08
-    default: 0x00
+    default: 0x01
     description: |
       SW setting used to control the matrix size by turning off SWx pins
       as described in the datasheet.
+
+  pwm-frequency:
+    type: int
+    required: false
+    enum:
+      - 0x00
+      - 0x01
+      - 0x02
+      - 0x03
+      - 0x04
+      - 0x05
+      - 0x06
+      - 0x07
+    default: 0x01
+    description: |
+      PWM Frequency of the LEDs. See datasheet for the corresponding values
 
   map:
     type: array

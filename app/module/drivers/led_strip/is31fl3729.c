@@ -16,7 +16,6 @@
 
 LOG_MODULE_REGISTER(is31, CONFIG_ZMK_LOG_LEVEL);
 
-#define IS31FL3729_BUFFER_SIZE 0x90
 #define IS31FL3729_CS_NUM 16
 
 #define IS31FL3729_PWM_BASE 0x01
@@ -35,13 +34,15 @@ struct is31fl3729_config {
     const struct gpio_dt_spec sdb_gpio;
     uint8_t gcc;
     uint8_t sws;
+    uint8_t pwmf;
     uint8_t *rgb_map;
     uint8_t *gamma;
     uint8_t scaling[16];
+    size_t px_buf_size;
 };
 
 struct is31fl3729_data {
-    uint8_t *px_buffer;
+    uint8_t *px_buf;
 };
 
 static int is31fl3729_reg_write(const struct device *dev, uint8_t addr, uint8_t value) {
@@ -68,14 +69,15 @@ static int is31fl3729_reg_burst_write(const struct device *dev, uint8_t start_ad
 static inline bool num_pixels_ok(const struct is31fl3729_config *config, size_t num_pixels) {
     size_t num_bytes;
     const bool overflow = size_mul_overflow(num_pixels, 3, &num_bytes);
-    return !overflow && (num_bytes <= IS31FL3729_BUFFER_SIZE);
+    return !overflow && (num_bytes <= config->px_buf_size);
 }
 
 /**
  * Updates individual LED channels without an RGB interpretation.
  */
 static int is31fl3729_strip_update_channels(const struct device *dev, uint8_t *channels, size_t num_channels) {
-    if (IS31FL3729_BUFFER_SIZE < num_channels) {
+    const struct is31fl3729_config *config = dev->config;
+    if (config->px_buf_size < num_channels) {
         return -ENOMEM;
     }
     int ret = is31fl3729_reg_burst_write(dev, IS31FL3729_PWM_BASE, channels, num_channels);
@@ -98,11 +100,11 @@ static int is31fl3729_strip_update_rgb(const struct device *dev, struct led_rgb 
     }
 
     for (int i = 0; i < num_pixels; i ++) {
-        data->px_buffer[config->rgb_map[3 * i]] = config->gamma[pixels[i].r];
-        data->px_buffer[config->rgb_map[3 * i + 1]] = config->gamma[pixels[i].g];
-        data->px_buffer[config->rgb_map[3 * i + 2]] = config->gamma[pixels[i].b];
+        data->px_buf[config->rgb_map[3 * i]] = config->gamma[pixels[i].r];
+        data->px_buf[config->rgb_map[3 * i + 1]] = config->gamma[pixels[i].g];
+        data->px_buf[config->rgb_map[3 * i + 2]] = config->gamma[pixels[i].b];
     }
-    return is31fl3729_strip_update_channels(dev, data->px_buffer, IS31FL3729_BUFFER_SIZE);
+    return is31fl3729_strip_update_channels(dev, data->px_buf, config->px_buf_size);
 }
 
 /*
@@ -141,6 +143,13 @@ int static is31fl3729_init(const struct device *dev) {
         LOG_ERR("conf %d", ret);
         return ret;
     }
+
+    ret = is31fl3729_reg_write(dev, IS31FL3729_PWM_FREQ_REG, config->pwmf & 0x07);
+    if (ret < 0) {
+        LOG_ERR("pwmf %d", ret);
+        return ret;
+    }
+
     ret = is31fl3729_reg_write(dev, IS31FL3729_GCC_REG, config->gcc);
     if (ret < 0) {
         LOG_ERR("gcc %d", ret);
@@ -174,13 +183,14 @@ static const struct led_strip_driver_api is31fl3729_api = {
     (DT_INST_PROP(idx, r_ext) * DT_INST_PROP(idx, led_max_current) * 64 * 256) / (342 * 255)
 
 #define IS31FL3729_DEVICE(idx)                                                                     \
-    static uint8_t is31fl3729_##idx##_px_buffer[IS31FL3729_BUFFER_SIZE];                           \
+    static uint8_t is31fl3729_##idx##_px_buffer[16 * (9 - DT_INST_PROP(idx, sw_setting))];         \
                                                                                                    \
     static struct is31fl3729_data is31fl3729_##idx##_data = {                                      \
-        .px_buffer = is31fl3729_##idx##_px_buffer,                                                 \
+        .px_buf = is31fl3729_##idx##_px_buffer,                                                    \
     };                                                                                             \
                                                                                                    \
-    static uint8_t is31fl3729_##idx##_rgb_map[IS31FL3729_BUFFER_SIZE] = DT_INST_PROP(idx, map);    \
+    static uint8_t is31fl3729_##idx##_rgb_map[16 * (9 - DT_INST_PROP(idx, sw_setting))] =          \
+        DT_INST_PROP(idx, map);                                                                    \
     static uint8_t is31fl3729_##idx##_gamma[256] = DT_INST_PROP(idx, gamma);                       \
                                                                                                    \
     static const struct is31fl3729_config is31fl3729_##idx##_config = {                            \
@@ -188,9 +198,11 @@ static const struct led_strip_driver_api is31fl3729_api = {
         .sdb_gpio = GPIO_DT_SPEC_GET(DT_DRV_INST(idx), sdb_gpios),                                 \
         .gcc = IS31FL3729_GCC(idx),                                                                \
         .sws = DT_INST_PROP(idx, sw_setting),                                                      \
+        .pwmf = DT_INST_PROP(idx, pwm_frequency),                                                  \
         .rgb_map = is31fl3729_##idx##_rgb_map,                                                     \
         .gamma = is31fl3729_##idx##_gamma,                                                         \
         .scaling = DT_INST_PROP(idx, scaling),                                                     \
+        .px_buf_size = 16 * (9 - DT_INST_PROP(idx, sw_setting)),                                   \
     };                                                                                             \
                                                                                                    \
     DEVICE_DT_INST_DEFINE(idx, &is31fl3729_init, NULL, &is31fl3729_##idx##_data,                   \
