@@ -6,8 +6,14 @@
 #define CAT2(a, b) CAT2_(a,b)
 #define PIX(c, rgb) PIX_(c, rgb)
 #define RGB_(c, xyz) RGB(c, xyz)
-#define PIX_(c, rgb) RGB_(SW(c), CAT2(RGB_CS, rgb))
-#define BGR_SCALING 255 200 180
+#define PIX_(c, rgb) RGB_(SW(CAT2(A, c)), FOR_EACH(CS, (,), CAT2(RGB_CS, rgb)))
+#define BGR_SCALING 255 255 255
+//255 200 180
+
+#define A0 4
+#define A1 3
+#define A2 2
+#define A3 1
 
 / {
     model = "fissure";
@@ -21,6 +27,7 @@
 		zmk,matrix_transform = &transform;
         zmk,steno-flash = &steno_flash;
         zmk,battery = &vbat;
+        zmk,led-widgets-dev = &rgb;
     };
 
 	transform: transform {
@@ -83,11 +90,11 @@ RC(1,0) RC(2,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)   RC(5,4) RC(5,3) RC(5,2) RC(5,1
     };
 };
 
-&spi0 {
+&spi1 {
     compatible = "nordic,nrf-spim";
     status = "okay";
-    pinctrl-0 = <&spi0_def>;
-    pinctrl-1 = <&spi0_slp>;
+    pinctrl-0 = <&spi1_def>;
+    pinctrl-1 = <&spi1_slp>;
     pinctrl-names = "default", "sleep";
 
     steno_flash: nor-flash@0 {

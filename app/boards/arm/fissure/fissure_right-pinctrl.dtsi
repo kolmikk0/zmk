@@ -14,12 +14,12 @@
         };
     };
 
-    spi0_def: spi0_default {
+    spi1_def: spi1_default {
         group1 {
             psels = SPI_PINS;
         };
     };
-    spi0_slp: spi0_sleep {
+    spi1_slp: spi1_sleep {
         group1 {
             psels = SPI_PINS;
             low-power-enable;

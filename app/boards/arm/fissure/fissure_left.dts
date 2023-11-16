@@ -14,17 +14,17 @@
 #define RGB_CS4 12, 11, 10
 &rgb {
     map = <
-PIX(4, 0) PIX(4, 1) PIX(4, 3) PIX(3, 3) PIX(2, 3) PIX(1, 3)
-PIX(3, 0) PIX(2, 0) PIX(4, 2) PIX(4, 4) PIX(2, 2) PIX(1, 2)
-          PIX(1, 0) PIX(3, 1) PIX(3, 2) PIX(2, 1) PIX(1, 1)
-                              PIX(3, 4) PIX(2, 4) PIX(1, 4)
+PIX(0, 0) PIX(0, 1) PIX(0, 3) PIX(1, 3) PIX(2, 3) PIX(3, 3)
+PIX(1, 0) PIX(2, 0) PIX(0, 2) PIX(0, 4) PIX(2, 2) PIX(3, 2)
+          PIX(3, 0) PIX(1, 1) PIX(1, 2) PIX(2, 1) PIX(3, 1)
+                              PIX(1, 4) PIX(2, 4) PIX(3, 4)
         >;
 };
 
-&spi0 {
+&spi1 {
     cs-gpios = <&gpio0 22 GPIO_ACTIVE_LOW>;
 };
 
 &steno_flash {
-    jedec-id = [20 ba 18];      // TODO
+    jedec-id = [ef 40 18];
 };
