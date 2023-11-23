@@ -64,9 +64,9 @@ static void run_widget_cmd(const led_event_type_t ev, const uint8_t cmd_ind) {
     LOG_DBG("led" LISTIFY(NUM_LEDS, _FMT, ) LISTIFY(NUM_LEDS, _ARG, ));
 #undef _FMT
 #undef _ARG
-    for (uint8_t i = 0; i < NUM_LEDS; i++) {
-        led_set_brightness(leds, i, cmd->brightness[i]);
-    }
+    /* for (uint8_t i = 0; i < NUM_LEDS; i++) { */
+    /*     led_set_brightness(leds, i, cmd->brightness[i]); */
+    /* } */
     if (cmd->timeout > 0) {
         LOG_DBG("wait %u", cmd->timeout);
         k_work_schedule(&led_widget_work, K_MSEC(cmd->timeout));
@@ -205,26 +205,26 @@ static int led_widgets_init() {
         /* { .r = 242, .g = 59, .b = 0 }, */
         /* { .r = 255, .g = 59, .b = 0 }, */
 
-        { .r = 255, .g = 0, .b = 0 },
-        { .r = 255, .g = 128, .b = 0 },
-        { .r = 255, .g = 255, .b = 0 },
-        { .r = 128, .g = 255, .b = 0 },
-        { .r = 0, .g = 255, .b = 0 },
-        { .r = 0, .g = 255, .b = 128 },
-        { .r = 0, .g = 255, .b = 255 },
-        { .r = 0, .g = 128, .b = 255 },
-        { .r = 0, .g = 0, .b = 255 },
-        { .r = 128, .g = 0, .b = 255 },
-        { .r = 255, .g = 0, .b = 255 },
-        { .r = 255, .g = 0, .b = 128 },
-        { .r = 255, .g = 0, .b = 0 },
-        { .r = 255, .g = 128, .b = 0 },
-        { .r = 255, .g = 255, .b = 0 },
-        { .r = 128, .g = 255, .b = 0 },
-        { .r = 0, .g = 255, .b = 0 },
-        { .r = 0, .g = 255, .b = 128 },
-        { .r = 0, .g = 255, .b = 255 },
-        { .r = 0, .g = 128, .b = 255 },
+        { .r = 255, .g = 0, .b = 0, },
+        { .r = 255, .g = 77, .b = 0, },
+        { .r = 255, .g = 153, .b = 0, },
+        { .r = 255, .g = 230, .b = 0, },
+        { .r = 204, .g = 255, .b = 0, },
+        { .r = 128, .g = 255, .b = 0, },
+        { .r = 51, .g = 255, .b = 0, },
+        { .r = 0, .g = 255, .b = 26, },
+        { .r = 0, .g = 255, .b = 102, },
+        { .r = 0, .g = 255, .b = 179, },
+        { .r = 0, .g = 255, .b = 255, },
+        { .r = 0, .g = 178, .b = 255, },
+        { .r = 0, .g = 102, .b = 255, },
+        { .r = 0, .g = 25, .b = 255, },
+        { .r = 51, .g = 0, .b = 255, },
+        { .r = 128, .g = 0, .b = 255, },
+        { .r = 204, .g = 0, .b = 255, },
+        { .r = 255, .g = 0, .b = 229, },
+        { .r = 255, .g = 0, .b = 153, },
+        { .r = 255, .g = 0, .b = 76, },
     };
     led_strip_update_rgb(leds, pixels, 20);
     for (uint8_t i = 0; i < LED_EVENT_SIZE; i++) {
