@@ -21,10 +21,10 @@ PIX(1, 0) PIX(2, 0) PIX(0, 2) PIX(0, 4) PIX(2, 2) PIX(3, 2)
         >;
 };
 
-&spi1 {
-    cs-gpios = <&gpio0 22 GPIO_ACTIVE_LOW>;
+&rgb {
+    sdb-gpios = <&gpio0 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
 };
 
-&steno_flash {
-    jedec-id = [ef 40 18];
+&spi1 {
+    cs-gpios = <&gpio0 22 GPIO_ACTIVE_LOW>;
 };

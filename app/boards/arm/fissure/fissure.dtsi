@@ -84,7 +84,6 @@ RC(1,0) RC(2,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)   RC(5,4) RC(5,3) RC(5,2) RC(5,1
         led-max-current = <1>;
         sw-setting = <5>;           // first 4 SW lines
         pwm-frequency = <5>;        // 0.5kHz
-        sdb-gpios = <&gpio0 26 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
         chain-length = <60>;
         scaling = <BGR_SCALING BGR_SCALING BGR_SCALING BGR_SCALING BGR_SCALING 0>;
     };
@@ -106,6 +105,7 @@ RC(1,0) RC(2,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)   RC(5,4) RC(5,3) RC(5,2) RC(5,1
         has-dpd;
         t-enter-dpd = <3000>;
         t-exit-dpd = <30000>;
+        jedec-id = [ef 40 18];
     };
 };
 
