@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -12,8 +12,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/mouse_tick.h>
 #include <zmk/endpoints.h>
 #include <zmk/mouse.h>
-
-#include <sys/util.h> // CLAMP
 
 #if CONFIG_MINIMAL_LIBC
 static float powf(float base, float exponent) {
