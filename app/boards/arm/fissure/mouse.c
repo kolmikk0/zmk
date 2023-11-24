@@ -1,5 +1,5 @@
-#include <drivers/sensor.h>
-#include <logging/log.h>
+#include <zephyr/drivers/sensor.h>
+#include <zephyr/logging/log.h>
 
 #include <zmk/hid.h>
 #include <zmk/endpoints.h>

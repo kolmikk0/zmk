@@ -12,6 +12,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/mouse_tick.h>
 #include <zmk/endpoints.h>
 #include <zmk/mouse.h>
+#include <zmk/hid.h>
 
 #if CONFIG_MINIMAL_LIBC
 static float powf(float base, float exponent) {
