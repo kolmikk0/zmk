@@ -11,7 +11,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/drivers/led_strip.h>
 
-LOG_MODULE_REGISTER(led_widgets, 4);
+LOG_MODULE_REGISTER(led_widgets, 2);
 
 static const struct device *leds = DEVICE_DT_GET(DT_CHOSEN(zmk_led_widgets_dev));
 extern const led_widget_t led_widgets[LED_EVENT_SIZE][CONFIG_ZMK_LED_WIDGETS_MAX_WIDGET_NUM];
@@ -183,49 +183,14 @@ static int led_widgets_event_listener(const zmk_event_t *ev) {
 }
 
 static int led_widgets_init() {
-    struct led_rgb pixels[] = {
-        /* { .r = 13, .g = 59, .b = 0 }, */
-        /* { .r = 26, .g = 59, .b = 0 }, */
-        /* { .r = 38, .g = 59, .b = 0 }, */
-        /* { .r = 51, .g = 59, .b = 0 }, */
-        /* { .r = 64, .g = 59, .b = 0 }, */
-        /* { .r = 77, .g = 59, .b = 0 }, */
-        /* { .r = 89, .g = 59, .b = 0 }, */
-        /* { .r = 102, .g = 59, .b = 0 }, */
-        /* { .r = 115, .g = 59, .b = 0 }, */
-        /* { .r = 128, .g = 59, .b = 0 }, */
-        /* { .r = 140, .g = 59, .b = 0 }, */
-        /* { .r = 153, .g = 59, .b = 0 }, */
-        /* { .r = 166, .g = 59, .b = 0 }, */
-        /* { .r = 179, .g = 59, .b = 0 }, */
-        /* { .r = 191, .g = 59, .b = 0 }, */
-        /* { .r = 204, .g = 59, .b = 0 }, */
-        /* { .r = 217, .g = 59, .b = 0 }, */
-        /* { .r = 230, .g = 59, .b = 0 }, */
-        /* { .r = 242, .g = 59, .b = 0 }, */
-        /* { .r = 255, .g = 59, .b = 0 }, */
-
-        { .r = 255, .g = 0, .b = 0, },
-        { .r = 255, .g = 77, .b = 0, },
-        { .r = 255, .g = 153, .b = 0, },
-        { .r = 255, .g = 230, .b = 0, },
-        { .r = 204, .g = 255, .b = 0, },
-        { .r = 128, .g = 255, .b = 0, },
-        { .r = 51, .g = 255, .b = 0, },
-        { .r = 0, .g = 255, .b = 26, },
-        { .r = 0, .g = 255, .b = 102, },
-        { .r = 0, .g = 255, .b = 179, },
-        { .r = 0, .g = 255, .b = 255, },
-        { .r = 0, .g = 178, .b = 255, },
-        { .r = 0, .g = 102, .b = 255, },
-        { .r = 0, .g = 25, .b = 255, },
-        { .r = 51, .g = 0, .b = 255, },
-        { .r = 128, .g = 0, .b = 255, },
-        { .r = 204, .g = 0, .b = 255, },
-        { .r = 255, .g = 0, .b = 229, },
-        { .r = 255, .g = 0, .b = 153, },
-        { .r = 255, .g = 0, .b = 76, },
-    };
+    struct led_rgb pixels[20] = {0};
+pixels[
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+17
+#else
+19
+#endif
+        ].g = 4;
     led_strip_update_rgb(leds, pixels, 20);
     for (uint8_t i = 0; i < LED_EVENT_SIZE; i++) {
         active_widgets_ind[i] = -1;

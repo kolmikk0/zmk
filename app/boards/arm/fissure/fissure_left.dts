@@ -22,7 +22,7 @@ PIX(1, 0) PIX(2, 0) PIX(0, 2) PIX(0, 4) PIX(2, 2) PIX(3, 2)
 };
 
 &rgb {
-    sdb-gpios = <&gpio0 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+    sdb-gpios = <&gpio0 26 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
 };
 
 &spi1 {

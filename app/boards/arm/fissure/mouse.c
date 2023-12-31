@@ -51,7 +51,7 @@ static void handle_mouse(const struct device *dev, const struct sensor_trigger *
     /*     } */
     /* } */
     /* if (update) { */
-        zmk_hid_mouse_movement_set(dx.val1, dy.val1);
+        zmk_hid_mouse_movement_set(-dy.val1, dx.val1);
     /* } */
         /* button = LCLK; */
     /* } */
