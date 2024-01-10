@@ -5,9 +5,3 @@ config BOARD_FISSURE_RIGHT
 config BOARD_FISSURE_LEFT
 	bool "fissure left"
 	depends on SOC_NRF52840_QIAA
-
-# config BOARD_ENABLE_DCDC
-# 	bool "Enable DCDC mode"
-# 	select SOC_DCDC_NRF52X
-# 	default y
-# 	depends on BOARD_FISSURE_LEFT || BOARD_FISSURE_RIGHT

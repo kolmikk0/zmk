@@ -152,11 +152,11 @@ int static is31fl3729_init(const struct device *dev) {
     ret = is31fl3729_reg_write(dev, IS31FL3729_GCC_REG, 0x10);
     ret = is31fl3729_reg_write(dev, IS31FL3729_PULL_SEL_REG, 0x0);
     uint8_t inf[0x12];
-    ret = is31fl3729_reg_write(dev, IS31FL3729_CONFIG_REG, 0x59 | (0x2) << 1);
+    ret = is31fl3729_reg_write(dev, IS31FL3729_CONFIG_REG, 0x51 | (0x2) << 1);
     k_msleep(10);
     is31fl3729_reg_burst_read(dev, IS31FL3729_OPEN_SHORT_BASE, inf, 0x12);
     /* LOG_HEXDUMP_INF(inf, 0x12, "short"); */
-    ret = is31fl3729_reg_write(dev, IS31FL3729_CONFIG_REG, 0x59 | (0x1) << 1);
+    ret = is31fl3729_reg_write(dev, IS31FL3729_CONFIG_REG, 0x51 | (0x1) << 1);
     k_msleep(10);
     is31fl3729_reg_burst_read(dev, IS31FL3729_OPEN_SHORT_BASE, inf, 0x12);
     /* LOG_HEXDUMP_INF(inf, 0x12, "open"); */

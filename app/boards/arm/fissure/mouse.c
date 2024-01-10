@@ -5,14 +5,13 @@
 #include <zmk/endpoints.h>
 #include <zmk/keymap.h>
 
-#define SCROLL_DIV_FACTOR 5
+#define SCROLL_DIV_FACTOR 35
 
 LOG_MODULE_REGISTER(mouse, 3);
 
 const struct device *mouse = DEVICE_DT_GET(DT_INST(0, pixart_pmw3610));
 
 static void handle_mouse(const struct device *dev, const struct sensor_trigger *trig) {
-    /* static uint8_t last_pressed = 0; */
     int ret = sensor_sample_fetch(dev);
     if (ret < 0) {
         LOG_ERR("fetch: %d", ret);
@@ -29,18 +28,11 @@ static void handle_mouse(const struct device *dev, const struct sensor_trigger *
         LOG_ERR("get dy: %d", ret);
         return;
     }
-    LOG_DBG("mouse %d %d", dx.val1, dy.val1);
-    /* const uint8_t layer = zmk_keymap_highest_layer_active(); */
-    /* uint8_t button; */
-    /* static uint8_t last_button = 0; */
-    /* static int8_t scroll_ver_rem = 0, scroll_hor_rem = 0; */
-    /* if (layer == 3) {   // raise */
-    /*     const int16_t total_hor = dx.val1 + scroll_hor_rem, total_ver = -dy.val1 + scroll_ver_rem; */
-    /*     scroll_hor_rem = total_hor % SCROLL_DIV_FACTOR; */
-    /*     scroll_ver_rem = total_ver % SCROLL_DIV_FACTOR; */
-    /*     zmk_hid_mouse_scroll_update(total_hor / SCROLL_DIV_FACTOR, total_ver / SCROLL_DIV_FACTOR); */
-    /*     button = RCLK; */
-    /* } else { */
+    const int16_t x = -dy.val1, y = dx.val1;
+    LOG_DBG("mouse %d %d", x, y);
+    const uint8_t layer = zmk_keymap_highest_layer_active();
+    /* static uint8_t last_layer = 0; */
+    static int8_t scroll_ver_rem = 0, scroll_hor_rem = 0;
     /* static bool reached_zero = false; */
     /* bool update = true; */
     /* if (x == 0 && y == 0) { */
@@ -51,18 +43,21 @@ static void handle_mouse(const struct device *dev, const struct sensor_trigger *
     /*     } */
     /* } */
     /* if (update) { */
-        zmk_hid_mouse_movement_set(-dy.val1, dx.val1);
+        /* if (layer != last_layer) { */
+        zmk_hid_mouse_movement_set(0, 0);
+        zmk_hid_mouse_scroll_set(0, 0);
+        /* } */
+        if (layer == 2) {   // raise
+            zmk_hid_mouse_movement_set(x, y);
+        } else {
+            const int16_t total_hor = x + scroll_hor_rem, total_ver = -y + scroll_ver_rem;
+            scroll_hor_rem = total_hor % SCROLL_DIV_FACTOR;
+            scroll_ver_rem = total_ver % SCROLL_DIV_FACTOR;
+            zmk_hid_mouse_scroll_set(total_hor / SCROLL_DIV_FACTOR, total_ver / SCROLL_DIV_FACTOR);
+        }
+        zmk_endpoints_send_mouse_report();
     /* } */
-        /* button = LCLK; */
-    /* } */
-    /* if (!last_pressed && btn.val1) { */
-    /*     zmk_hid_mouse_buttons_press(button); */
-    /*     last_button = button; */
-    /* } else if (last_pressed && !btn.val1) { */
-    /*     zmk_hid_mouse_buttons_release(last_button); */
-    /* } */
-    zmk_endpoints_send_mouse_report();
-    /* last_pressed = btn.val1; */
+    /* last_layer = layer; */
 }
 
 static int mouse_init() {
