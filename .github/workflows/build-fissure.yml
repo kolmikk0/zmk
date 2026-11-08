@@ -31,17 +31,22 @@ jobs:
 
       - name: Prepare Artifacts
         run: |
-          mkdir -p /tmp/artifacts
-          if [ -f build/left/zephyr/zephyr.hex ]; then cp build/left/zephyr/zephyr.hex /tmp/artifacts/fissure_left.hex; fi
-          if [ -f build/right/zephyr/zephyr.hex ]; then cp build/right/zephyr/zephyr.hex /tmp/artifacts/fissure_right.hex; fi
-          if [ -f build/left/zephyr/zmk.uf2 ]; then cp build/left/zephyr/zmk.uf2 /tmp/artifacts/fissure_left.uf2; fi
-          if [ -f build/right/zephyr/zmk.uf2 ]; then cp build/right/zephyr/zmk.uf2 /tmp/artifacts/fissure_right.uf2; fi
-          if [ -f build/left/zephyr/zephyr.bin ]; then cp build/left/zephyr/zephyr.bin /tmp/artifacts/fissure_left.bin; fi
-          if [ -f build/right/zephyr/zephyr.bin ]; then cp build/right/zephyr/zephyr.bin /tmp/artifacts/fissure_right.bin; fi
-          ls -la /tmp/artifacts
+          mkdir -p artifacts
+          echo "=== Left outputs ==="
+          ls -la build/left/zephyr/
+          echo "=== Right outputs ==="
+          ls -la build/right/zephyr/
+          for ext in hex bin elf uf2; do
+            if [ -f "build/left/zephyr/zmk.$ext" ]; then cp "build/left/zephyr/zmk.$ext" "artifacts/fissure_left.$ext"; fi
+            if [ -f "build/left/zephyr/zephyr.$ext" ]; then cp "build/left/zephyr/zephyr.$ext" "artifacts/fissure_left.$ext"; fi
+            if [ -f "build/right/zephyr/zmk.$ext" ]; then cp "build/right/zephyr/zmk.$ext" "artifacts/fissure_right.$ext"; fi
+            if [ -f "build/right/zephyr/zephyr.$ext" ]; then cp "build/right/zephyr/zephyr.$ext" "artifacts/fissure_right.$ext"; fi
+          done
+          echo "=== Prepared Artifacts ==="
+          ls -la artifacts/
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: fissure-firmware
-          path: /tmp/artifacts/*
+          path: artifacts/*
