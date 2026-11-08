@@ -1,0 +1,47 @@
+name: Build Fissure Firmware
+
+on:
+  push:
+    branches:
+      - fissure3.3-working
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/zmkfirmware/zmk-build-arm:3.5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: West Init
+        run: |
+          west init -l app/
+          west update
+          west zephyr-export
+
+      - name: Build Left
+        run: |
+          west build -s app -p -b fissure_left -d build/left
+
+      - name: Build Right
+        run: |
+          west build -s app -p -b fissure_right -d build/right
+
+      - name: Prepare Artifacts
+        run: |
+          mkdir -p /tmp/artifacts
+          if [ -f build/left/zephyr/zephyr.hex ]; then cp build/left/zephyr/zephyr.hex /tmp/artifacts/fissure_left.hex; fi
+          if [ -f build/right/zephyr/zephyr.hex ]; then cp build/right/zephyr/zephyr.hex /tmp/artifacts/fissure_right.hex; fi
+          if [ -f build/left/zephyr/zmk.uf2 ]; then cp build/left/zephyr/zmk.uf2 /tmp/artifacts/fissure_left.uf2; fi
+          if [ -f build/right/zephyr/zmk.uf2 ]; then cp build/right/zephyr/zmk.uf2 /tmp/artifacts/fissure_right.uf2; fi
+          if [ -f build/left/zephyr/zephyr.bin ]; then cp build/left/zephyr/zephyr.bin /tmp/artifacts/fissure_left.bin; fi
+          if [ -f build/right/zephyr/zephyr.bin ]; then cp build/right/zephyr/zephyr.bin /tmp/artifacts/fissure_right.bin; fi
+          ls -la /tmp/artifacts
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: fissure-firmware
+          path: /tmp/artifacts/*

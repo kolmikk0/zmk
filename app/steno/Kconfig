@@ -1,0 +1,143 @@
+menuconfig ZMK_EMBEDDED_STENO
+    bool "ZMK embedded steno"
+    default n
+
+if ZMK_EMBEDDED_STENO
+
+config ZMK_EMBEDDED_STENO_KEY_INTERVAL
+    int "Time interval between macro key presses and releases in microseconds"
+    default 3
+
+config ZMK_EMBEDDED_STENO_KEY_BUF_SIZE
+    int "Ring buffer size for macro key events"
+    default 256
+
+config ZMK_EMBEDDED_STENO_ENABLE_UI
+    bool "Enables UI in the embedded steno engine"
+    select LVGL_USE_CONT
+    depends on ZMK_DISPLAY
+    depends on ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+    select ZMK_EMBEDDED_UI_SCREEN
+    default y
+
+if ZMK_EMBEDDED_STENO_ENABLE_UI
+# config LVGL_FONT_MONTSERRAT_12
+#     default y
+
+# choice LVGL_THEME_DEFAULT_FONT_NORMAL
+#     default LVGL_THEME_DEFAULT_FONT_NORMAL_MONTSERRAT_12
+# endchoice
+
+# choice LVGL_THEME_DEFAULT_FONT_SMALL
+#     default LVGL_THEME_DEFAULT_FONT_SMALL_MONTSERRAT_12
+# endchoice
+endif
+
+config ZMK_EMBEDDED_STENO_DISP_INVERT
+    bool "Invert the display background and foreground colors. Useful on the Sharp Memory Display"
+    depends on ZMK_EMBEDDED_STENO_ENABLE_UI
+    default n
+
+config ZMK_EMBEDDED_STENO_DICTEDIT
+    bool "Enables dictionary editing in the embedded steno engine"
+    depends on ZMK_EMBEDDED_STENO_ENABLE_UI
+    default y
+
+config ZMK_EMBEDDED_STENO_NOUNICODE
+    bool "Disable Unicode output in the embedded steno engine"
+    default n
+
+choice ZMK_EMBEDDED_UI_SCREEN
+    prompt "Screen to use for UI"
+    depends on ZMK_EMBEDDED_STENO_ENABLE_UI
+    default ZMK_EMBEDDED_UI_SCREEN_LCD
+
+config ZMK_EMBEDDED_UI_SCREEN_LCD
+    bool "Use large LCDs (width >= 144pixels)"
+
+config ZMK_EMBEDDED_UI_SCREEN_SMALL_OLED
+    bool "Use small OLED (SSD1306, 128x32)"
+
+config ZMK_EMBEDDED_UI_SCREEN_NORMAL_OLED
+    bool "Use normal OLED (SSD1306, 128x64)"
+
+endchoice
+
+choice ZMK_EMBEDDED_STENO_OLED_TEXT_FONT
+    prompt "Text font for OLED (for anything outside of tapes)"
+    depends on ZMK_EMBEDDED_STENO_ENABLE_UI
+    depends on ZMK_EMBEDDED_UI_SCREEN_SMALL_OLED || ZMK_EMBEDDED_UI_SCREEN_NORMAL_OLED
+    default ZMK_EMBEDDED_STENO_FONT_OLED_ADASCII_8
+
+config ZMK_EMBEDDED_STENO_FONT_OLED_ADASCII_8
+    bool "Use Adascii 8 (5x7 pixel perfect font with only ASCII characters from Adafruit library somewhere)"
+
+config ZMK_EMBEDDED_STENO_FONT_OLED_UNSCII_8
+    select LVGL_FONT_UNSCII_8
+    bool "Use UNSCII 8 (8 px pixel perfect font with only ASCII characters)"
+
+config ZMK_EMBEDDED_STENO_FONT_OLED_IOSEVKA_8
+    bool "Use Iosevka 8"
+
+endchoice
+
+choice ZMK_EMBEDDED_STENO_FONT
+    prompt "UI font"
+    depends on ZMK_EMBEDDED_STENO_ENABLE_UI
+    depends on ZMK_EMBEDDED_UI_SCREEN_LCD
+    default ZMK_EMBEDDED_STENO_FONT_IOSEVKA_16
+
+config ZMK_EMBEDDED_STENO_FONT_JETBRAINSMONO_16
+    bool "Use JetBrains Mono 16"
+
+config ZMK_EMBEDDED_STENO_FONT_ADASCII_8
+    bool "Use Adascii 8 (5x7 pixel perfect font with only ASCII characters from Adafruit library somewhere)"
+
+config ZMK_EMBEDDED_STENO_FONT_UNSCII_8
+    select LVGL_FONT_UNSCII_8
+    bool "Use UNSCII 8 (8 px pixel perfect font with only ASCII characters)"
+
+config ZMK_EMBEDDED_STENO_FONT_IOSEVKA_8
+    bool "Use Iosevka 8"
+
+config ZMK_EMBEDDED_STENO_FONT_IOSEVKA_12
+    bool "Use Iosevka 12"
+
+config ZMK_EMBEDDED_STENO_FONT_IOSEVKA_16
+    bool "Use Iosevka 16"
+
+endchoice
+
+config ZMK_EMBEDDED_STENO_STROKE_DISPLAY
+    bool "Enables graphical stroke display in the embedded steno engine"
+    depends on ZMK_EMBEDDED_STENO_ENABLE_UI
+    default n
+
+menu "Debugging"
+
+config ZMK_EMBEDDED_STENO_LOG_LEVEL
+    int "Logging level"
+	default 4
+
+config ZMK_EMBEDDED_STENO_DEBUG_FLASH
+    bool "Enable debugging of the flash component in the embedded steno engine"
+    default n
+
+config ZMK_EMBEDDED_STENO_DEBUG_HIST
+    bool "Enable debugging of the history component in the embedded steno engine"
+    default y
+
+config ZMK_EMBEDDED_STENO_DEBUG_DICTED
+    bool "Enable debugging of the dictionary editing component in the embedded steno engine"
+    default n
+
+config ZMK_EMBEDDED_STENO_DEBUG_STROKE
+    bool "Enable debugging of the stroke processing component in the embedded steno engine"
+    default n
+
+endmenu
+
+config ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE
+    default 256
+
+endif
